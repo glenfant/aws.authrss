@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<componentregistry>
+  <utilities>
+    <utility
+        interface="aws.authrss.interfaces.ITokensManager"
+        factory="aws.authrss.tokenmanager.DefaultTokensManager"
+        />
+  </utilities>
+</componentregistry>
