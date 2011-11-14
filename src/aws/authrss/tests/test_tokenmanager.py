@@ -49,7 +49,6 @@ class TestTokenManager(unittest.TestCase):
         (keep this test in last position)
         """
         self.token_mgr.pruneUserId('bar')
-        self.token_mgr.pruneUserId('foo')
         self.assertEqual(len(self.token_mgr._token2uid), 0,
                          "There should be 0 stored token/user id")
         return

@@ -4,21 +4,24 @@
 
 from zope.interface import implements
 from zope.component import getUtility
+from persistent import Persistent
 from BTrees.OOBTree import OOBTree
 from plone.uuid.interfaces import IUUIDGenerator
 
 from interfaces import ITokenManager
 
 
-class DefaultTokensManager(object):
+class DefaultTokenManager(Persistent):
     """Tokens manager persistent utility (per site)
     """
     implements(ITokenManager)
 
-    # {token: user id, ...}
-    _token2uid = OOBTree()
-    # {user id: token, ...}
-    _uid2token = OOBTree()
+    def __init__(self):
+        # {token: user id, ...}
+        self._token2uid = OOBTree()
+        # {user id: token, ...}
+        self._uid2token = OOBTree()
+        return
 
     def userIdForToken(self, token):
         """See ITokensManager

@@ -2,8 +2,8 @@
 <componentregistry>
   <utilities>
     <utility
-        interface="aws.authrss.interfaces.ITokensManager"
-        factory="aws.authrss.tokenmanager.DefaultTokensManager"
+        interface="aws.authrss.interfaces.ITokenManager"
+        factory="aws.authrss.tokenmanager.DefaultTokenManager"
         />
   </utilities>
 </componentregistry>

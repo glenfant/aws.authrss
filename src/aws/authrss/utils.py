@@ -2,30 +2,40 @@
 # $Id$
 """Misc utilities for aws.authrss"""
 
-from zope.component import getUtility
+from zope.component import getUtility, getMultiAdapter
 from AccessControl.SecurityManagement import (
     getSecurityManager, setSecurityManager, newSecurityManager
     )
 
-from interfaces import ITokensManager
+from interfaces import ITokenManager
+from aws.authrss import LOG
 
 
 class GrantPrivilegesForToken(object):
     """A context manager that grants temporarily (roles, groups) for the user
     that has a token
     """
-    def __init__(self, token, request):
+    def __init__(self, token, context, request=None):
         self.token = token
-        self.request = request
+        self.context = context
+        if request is None:
+            self.request = context.REQUEST
+        else:
+            self.request = request
         return
 
     def __enter__(self):
         """Grant privileges of the user who has the token
         """
         self.real_sm = getSecurityManager()
-        tokens_bucket = getUtility(ITokensManager)
-        user = tokens_bucket.memberForToken(self.token)
-        newSecurityManager(self.request, user)
+        tokens_bucket = getUtility(ITokenManager)
+        user_id = tokens_bucket.userIdForToken(self.token)
+        tools = getMultiAdapter((self.context, self.request), name=u'plone_tools')
+        member = tools.membership().getMemberById(user_id)
+        if member is not None:
+            newSecurityManager(self.request, member)
+        else:
+            LOG.warning("No user for token %s, will be considered as anonymous", user_id)
         return getSecurityManager()
 
     def __exit__(self, exc_type, exc_value, exc_tb):
