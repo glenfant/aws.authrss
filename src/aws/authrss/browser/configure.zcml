@@ -1,0 +1,23 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- Eek, there should be some ISyndicatable somewhere, but... -->
+
+  <browser:view
+     name="auth-rss-link"
+     for="*"
+     class=".views.RSSLinkView"
+     layer="aws.authrss.interfaces.IAuthRSSLayer"
+     permission="zope2.View"
+     />
+
+  <browser:view
+     name="AUTH-RSS"
+     for="*"
+     class=".views.AuthRSSView"
+     layer="aws.authrss.interfaces.IAuthRSSLayer"
+     permission="zope.Public"
+     />
+
+</configure>
