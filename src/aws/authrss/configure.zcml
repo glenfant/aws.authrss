@@ -9,6 +9,13 @@
 
   <include package=".browser" />
 
+  <!-- Purge granted to managers only by default (no need to make a roles map GS export) -->
+
+  <permission
+     id="aws.authrss.PurgeToken"
+     title="Plone Site Setup: Purge RSS authentication tokens"
+     />
+
   <genericsetup:registerProfile
      name="default"
      title="Authenticated RSS feeds (aws.authrss)"

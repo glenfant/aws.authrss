@@ -2,6 +2,8 @@
 aws.authrss
 ===========
 
+Access your Plone RSS feeds as authenticated user.
+
 Abstract
 ========
 
@@ -22,6 +24,12 @@ authenticated RSS field, and identifies the user **only** for the RSS feeds.
 
 A control panel for site administrators gives the possibility to prune private
 tokens of removed users.
+
+Plays with
+==========
+
+Plone 4.1 only as this component is still a baby. Plone 4.0 support should not
+be that difficult (contributors are welcome).
 
 Installation
 ============
@@ -47,3 +55,40 @@ Developers of ``aws.authrss`` should use this ::
   ...
   eggs =
       aws.authrss[test]
+
+Upgrading
+=========
+
+Available upgrades may be executed from the ``portal_setup`` tool of your Plone
+site in the **Upgrades** tab.
+
+Customization
+=============
+
+``aws.authrss`` comes with its own tokens manager that stores tokens in an
+OOBtree. See the module ``aws.authrss.tokenmanager.DefaulttokenManager``.
+
+You may proide your own tokens manager registering an utility that implements
+``aws.authrss.interfaces.ITokenManager`` in your component's
+``override.zcml``. Then install this local utility using a GenericSetup
+``componentregistry.xml`` file like this one ::
+
+  <?xml version="1.0"?>
+  <componentregistry>
+    <utilities>
+      <utility
+        interface="aws.authrss.interfaces.ITokenManager"
+        factory="my.component.tokenmanager.DefaultTokenManager"
+       />
+    </utilities>
+  </componentregistry>
+
+
+Planned features
+================
+
+Provide the same authenticated RSS feeds to search results but this requires to
+override the standard ``search.py`` template, and I hate overriding
+templates. Patches are welcome.
+
+

@@ -15,4 +15,21 @@
    <property name="visible">True</property>
   </object>
  </object>
+  <object name="user">
+   <object name="rss_token" meta_type="CMF Action" i18n:domain="aws.authrss"
+           insert-before="logout">
+   <property name="title" i18n:translate="">RSS Token</property>
+   <property name="description"
+      i18n:translate="">View or reset your RSS token</property>
+   <property
+      name="url_expr">string:${globals_view/navigationRootUrl}/@@personal-rss-token</property>
+   <property name="link_target"></property>
+   <property name="icon_expr"></property>
+   <property name="available_expr">python:member is not None</property>
+   <property name="permissions">
+    <element value="View"/>
+   </property>
+   <property name="visible">True</property>
+  </object>
+ </object>
 </object>
