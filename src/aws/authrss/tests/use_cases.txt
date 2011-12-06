@@ -1,0 +1,136 @@
+=========================
+Use cases for aws.authrss
+=========================
+
+``aws.authrss`` is a simple component that enables authenticated users of a
+Plone site to subscribe to RSS feeds that show all contents the same logged in
+user may view in the Plone site.
+
+Some initializations and preliminary checkins
+=============================================
+
+Our work environment::
+
+  >>> from lxml import etree
+  >>> portal = layer['portal']
+  >>> portal_url = portal.absolute_url()
+
+Checking global syndication settings
+
+  >>> portal.portal_syndication.isSiteSyndicationAllowed()
+  True
+
+Checking our component is instaled::
+
+  >>> qi_tool = portal['portal_quickinstaller']
+  >>> qi_tool.isProductInstalled('aws.authrss')
+  True
+
+Checking the required actions are available::
+
+  >>> actions_tool = portal['portal_actions']
+  >>> 'rss_token' in actions_tool['user'].keys()
+  True
+  >>> 'private_rss' in actions_tool['document_actions'].keys()
+  True
+
+FIXME: There's something buggy when evaluating the availability expression of
+actions thro  >>> actions_tool['user']['rss_token'].available_expr = 'python:True'
+ugh the test browser : Our actions are never available when they are
+available when the page is rendered throug a real browser! So we need to have them always available::
+
+  >>> actions_tool['user']['rss_token']._setPropValue('available_expr', 'python:True')
+  >>> actions_tool['document_actions']['private_rss']._setPropValue('available_expr', 'python:True')
+
+We grant reviewer role to the member such he will see pending content::
+
+  >>> from plone.app.testing import setRoles, TEST_USER_ID
+  >>> setRoles(portal, TEST_USER_ID, ['Member', 'Reviewer'])
+
+We need an anonymous user, a reviewer and a manager::
+
+  >>> anon_browser = layer.anonymous_browser()
+  >>> member_browser = layer.member_browser()
+  >>> mgr_browser = layer.manager_browser()
+
+The manager builds the 'foo' folder ::
+
+  >>> mgr_browser.open(portal_url + '/createObject?type_name=Folder')
+  >>> mgr_browser.getControl(name='title').value = 'Foo'
+  >>> mgr_browser.getControl(name='form.button.save').click()
+  >>> foo_folder_url = mgr_browser.url
+  >>> mgr_browser.open(foo_folder_url +
+  ...                  '/content_status_modify?workflow_action=publish')
+  >>> foo_folder_url
+  'http://nohost/plone/foo/'
+
+And enables syndication on that folder::
+
+  >>> mgr_browser.open(foo_folder_url + 'synPropertiesForm')
+  >>> submit = mgr_browser.getControl(name='form.button.enableSyndication')
+  >>> submit.click()
+  >>> foo_folder = portal['foo']
+  >>> layer.enable_syndication(foo_folder)
+  >>> portal.portal_syndication.isSyndicationAllowed(foo_folder)
+  True
+
+The anonymous can see this content::
+
+  >>> anon_browser.open(foo_folder_url)
+  >>> anon_browser.title.startswith('Foo')
+  True
+
+How is the link to the RSS feed?
+================================
+
+For the anonymous user
+----------------------
+
+The anonymous should have the usual legacy RSS URL::
+
+  >>> anon_browser.open(foo_folder_url)
+  >>> anon_browser.contents
+  ''
+  >>> tree = etree.HTML(anon_browser.contents)
+  >>> links = tree.xpath("//li[@id='document-action-private_rss']/a")
+  >>> len(links)
+  1
+  >>> links[0].attrib['href']
+  'http://nohost/plone/foo/RSS'
+
+For the authenticated user
+--------------------------
+
+An authenticated user could see the RSS link with his own private token::
+
+  >>> member_browser.open(foo_folder_url)
+  >>> tree = etree.HTML(member_browser.contents)
+  >>> links = tree.xpath("//li[@id='document-action-private_rss']/a")
+  >>> len(links)
+  1
+  >>> links[0].attrib['href']
+  'http://nohost/plone/foo/RSS'
+
+
+Resetting the personal token
+============================
+
+Checking the action link to the personal token
+----------------------------------------------
+
+The anonymous cannot reset his token::
+
+  >>> anon_browser.open(portal_url)
+  >>> anon_browser.getLink('RSS Token')
+  Traceback (most recent call last):
+  ...
+  LinkNotFoundError
+
+When the member has this link in his personal actions::
+
+  >>> member_browser.open(portal_url)
+  >>> link = member_browser.getLink('RSS Token')
+  >>> link.url
+  'http://nohost/plone/@@personal-rss-token'
+
+Anyway, even if the anonymous knows the URL, he cannot go there::
