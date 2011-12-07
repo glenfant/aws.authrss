@@ -30,8 +30,9 @@ class GrantPrivilegesForToken(object):
         self.real_sm = getSecurityManager()
         tokens_bucket = getUtility(ITokenManager)
         user_id = tokens_bucket.userIdForToken(self.token)
-        tools = getMultiAdapter((self.context, self.request), name=u'plone_tools')
-        member = tools.membership().getMemberById(user_id)
+        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
+        pas = portal_state.portal().acl_users
+        member = pas.getUserById(user_id)
         if member is not None:
             newSecurityManager(self.request, member)
         else:
