@@ -1,0 +1,9 @@
+#aws-authrss-token-reset:click {
+    evt-click-preventdefault: true;
+    action-server: reset_rss_auth_token;
+}
+
+#aws-authrss-totens-purge:click {
+    evt-click-preventdefault: true;
+    action-server: purge_rss_auth_tokens;
+}

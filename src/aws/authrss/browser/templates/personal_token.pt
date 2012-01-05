@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="aws.authrss">
+
+  <div metal:fill-slot="body" id="content">
+    <h1 class="documentFirstHeading" i18n:translate="">My RSS token</h1>
+
+    <p i18n:translate="explain_rss_token_1">
+      Your private RSS token grants your privileges to your favorite RSS reader
+      that may show up summary and links to contents you are allowed to view
+      when authenticated on this site.
+    </p>
+    <p i18n:translate="explain_rss_token_2">
+      This RSS token does <strong>not</strong> reveal your login or password for
+      this site, nor grant another user who knows your token to anything else
+      than reading a private RSS feed.
+    </p>
+    <p i18n:translate="explain_rss_token_3">
+      You may reset here this token at any time. If you reset this token, your
+      next visit to your favorite RSS reader will show only summary and links to
+      contents available to anonymous users. In order to have your private
+      contents available in your RSS reader, you will need to edit its RSS feeds
+      settings to this site and replace the previous token value by the one
+      displayed below.
+    </p>
+    <fieldset>
+      <legend i18n:translate="">Your token</legend>
+      <input type="text"
+             id="aws-authrss-token-value"
+             name="aws-authrss-token-value"
+             value="#"
+             style="width: 30em"
+             readonly="readonly"
+             tal:attributes="value view/tokenValue"
+             />
+      <button class="context"
+              id="aws-authrss-token-reset"
+              name="aws-authrss-token-reset"
+              i18n:translate=""
+              >
+        Reset
+      </button>
+    </fieldset>
+  </div>
+</html>

@@ -12,8 +12,10 @@ Some initializations and preliminary checkins
 Our work environment::
 
   >>> from lxml import etree
+  >>> import transaction
   >>> portal = layer['portal']
   >>> portal_url = portal.absolute_url()
+  >>> workflow_tool = portal.portal_workflow
 
 Checking global syndication settings
 
@@ -34,18 +36,11 @@ Checking the required actions are available::
   >>> 'private_rss' in actions_tool['document_actions'].keys()
   True
 
-FIXME: There's something buggy when evaluating the availability expression of
-actions thro  >>> actions_tool['user']['rss_token'].available_expr = 'python:True'
-ugh the test browser : Our actions are never available when they are
-available when the page is rendered throug a real browser! So we need to have them always available::
-
-  >>> actions_tool['user']['rss_token']._setPropValue('available_expr', 'python:True')
-  >>> actions_tool['document_actions']['private_rss']._setPropValue('available_expr', 'python:True')
-
 We grant reviewer role to the member such he will see pending content::
 
   >>> from plone.app.testing import setRoles, TEST_USER_ID
   >>> setRoles(portal, TEST_USER_ID, ['Member', 'Reviewer'])
+  >>> transaction.commit()
 
 We need an anonymous user, a reviewer and a manager::
 
@@ -73,6 +68,7 @@ And enables syndication on that folder::
   >>> layer.enable_syndication(foo_folder)
   >>> portal.portal_syndication.isSyndicationAllowed(foo_folder)
   True
+  >>> transaction.commit()
 
 The anonymous can see this content::
 
@@ -89,13 +85,12 @@ For the anonymous user
 The anonymous should have the usual legacy RSS URL::
 
   >>> anon_browser.open(foo_folder_url)
-  >>> anon_browser.contents
-  ''
   >>> tree = etree.HTML(anon_browser.contents)
   >>> links = tree.xpath("//li[@id='document-action-private_rss']/a")
   >>> len(links)
   1
-  >>> links[0].attrib['href']
+  >>> anon_rss_url = links[0].attrib['href']
+  >>> anon_rss_url
   'http://nohost/plone/foo/RSS'
 
 For the authenticated user
@@ -108,12 +103,101 @@ An authenticated user could see the RSS link with his own private token::
   >>> links = tree.xpath("//li[@id='document-action-private_rss']/a")
   >>> len(links)
   1
-  >>> links[0].attrib['href']
-  'http://nohost/plone/foo/RSS'
+  >>> member_rss_url = links[0].attrib['href']
+  >>> member_rss_url.startswith('http://nohost/plone/foo/AUTH-RSS?token=')
+  True
 
+Let's add some content
+======================
+
+As the foo folder has no content, there's nothing to view in the RSS feeds,
+either the anonymous one or the private RSS feed for the member.
+
+Adding a public 'Title 1' document
+----------------------------------
+
+  >>> mgr_browser.open(foo_folder_url + '/createObject?type_name=Document')
+  >>> mgr_browser.getControl(name='title').value = 'Title 1'
+  >>> mgr_browser.getControl(name='description').value = 'Description 1'
+  >>> mgr_browser.getControl(name='form.button.save').click()
+  >>> _ = mgr_browser.url
+  >>> mgr_browser.open(_ + '/content_status_modify?workflow_action=publish')
+  >>> transaction.commit()
+  >>> title1_doc_url = _
+  >>> 'title-1' in portal['foo'].objectIds()
+  True
+  >>> title1_doc = portal['foo']['title-1']
+  >>> workflow_tool.getInfoFor(title1_doc, 'review_state')
+  'published'
+
+Adding a restricted 'Title 2' document
+--------------------------------------
+
+Same as above but users must be reviewers to see this one::
+
+  >>> mgr_browser.open(foo_folder_url + '/createObject?type_name=Document')
+  >>> mgr_browser.getControl(name='title').value = 'Title 2'
+  >>> mgr_browser.getControl(name='description').value = 'Description 2'
+  >>> mgr_browser.getControl(name='form.button.save').click()
+  >>> _ = mgr_browser.url
+  >>> mgr_browser.open(_ + '/content_status_modify?workflow_action=submit')
+  >>> transaction.commit()
+  >>> title2_doc_url = _
+  >>> 'title-2' in portal['foo'].objectIds()
+  True
+  >>> title2_doc = portal['foo']['title-2']
+  >>> workflow_tool.getInfoFor(title2_doc, 'review_state')
+  'pending'
+
+Checking the availability of various contents
+---------------------------------------------
+
+The anonymous may see the 'Title 1' document::
+
+  >>> anon_browser.open(title1_doc_url)
+  >>> anon_browser.url == title1_doc_url
+  True
+
+But not the 'Title 2' document::
+
+  >>> anon_browser.open(title2_doc_url)
+  Traceback (most recent call last):
+  ...
+  Unauthorized: ...
+
+The member may see both documents::
+
+  >>> member_browser.open(title1_doc_url)
+  >>> member_browser.url == title1_doc_url
+  True
+  >>> member_browser.open(title2_doc_url)
+  >>> member_browser.url == title2_doc_url
+  True
+
+Viewing the RSS feed of the Foo folder
+======================================
+
+Okay, we are now testing the main feature of this component and show that when
+viewing a private feed as anonymous, this feed shows also the elements the
+authenticated member is allowed to view::
+
+  >>> anon_browser.open(member_rss_url)
+  >>> feed = anon_browser.contents
+  >>> feed_urls = layer.rss_feed_urls(feed)
+  >>> feed_urls
+  ['http://nohost/plone/foo/title-1', 'http://nohost/plone/foo/title-2']
+
+But he cannot view the last URL of the feed::
+
+  >>> anon_browser.open(feed_urls[-1])
+  Traceback (most recent call last):
+  ...
+  Unauthorized: ...
 
 Resetting the personal token
 ============================
+
+
 
 Checking the action link to the personal token
 ----------------------------------------------

@@ -12,7 +12,7 @@ def read(*names):
 version = read('src', 'aws', 'authrss', 'version.txt')
 
 long_description = (
-    read('README.txt')
+    read('README.rst')
     + '\n' +
     'Contributors\n'
     '============\n'

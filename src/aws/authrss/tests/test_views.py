@@ -24,6 +24,7 @@ class TestViews(unittest.TestCase):
         setRoles(self.portal, TEST_USER_ID, TEST_USER_ROLES + ['Contributor', 'Reviewer'])
         login(self.portal, TEST_USER_NAME)
         self.portal.invokeFactory('Folder', 'folder_a', title="Folder A")
+        self.wf_tool.doActionFor(self.portal['folder_a'], 'publish')
 
         # FIXME: Why do we need to add explicitely our layer here when it is supposed
         # to be in the registered layers for this site (by its GS profile) ?

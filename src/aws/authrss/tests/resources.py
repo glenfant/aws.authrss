@@ -2,6 +2,9 @@
 # $Id$
 """Test fixures and resources"""
 
+from cStringIO import StringIO
+from lxml import etree
+
 from plone.app.testing import (
     PLONE_FIXTURE, PloneSandboxLayer, IntegrationTesting, FunctionalTesting,
     applyProfile, login, logout, setRoles,
@@ -25,7 +28,15 @@ class AwsAuthrss(PloneSandboxLayer):
         return
 
     def setUpPloneSite(self, portal):
+        # Why the f...k do we need to run the standard workflow GS step?
+        setuptool = portal['portal_setup']
+        setuptool.runImportStepFromProfile('profile-Products.CMFPlone:plone', 'workflow',
+                                           run_dependencies=False)
+
+        # Applying our default GS setup
         applyProfile(portal, 'aws.authrss:default')
+
+        # Enabling global site syndication
         syntool = portal['portal_syndication']
         syntool.editProperties(isAllowed=True)
         return
@@ -87,6 +98,21 @@ class AuthRssFunctionalTesting(FunctionalTesting):
         setRoles(portal, TEST_USER_ID, tu_roles)
         logout()
         return
+
+    def rss_feed_urls(self, feed):
+        """URLs of an RSS feed
+        :param feed: an RSS feed as XML string
+        """
+        namespaces = {
+            'rdf': "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            'dc': "http://purl.org/dc/elements/1.1/",
+            'syn': "http://purl.org/rss/1.0/modules/syndication/",
+            'rss': "http://purl.org/rss/1.0/"
+            }
+        feed_file = StringIO(feed)
+        feed_tree = etree.parse(feed_file)
+        return feed_tree.xpath('//rss:items//rdf:li/@rdf:resource',
+                               namespaces=namespaces)
 
 
 AWS_AUTHRSS_FUNCTIONAL_TESTING = AuthRssFunctionalTesting(

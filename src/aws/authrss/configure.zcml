@@ -5,16 +5,20 @@
    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
    i18n_domain="aws.authrss">
 
+  <i18n:registerTranslations directory="locales" />
+
   <five:registerPackage package="." initialize=".initialize" />
+
+  <!-- Purge granted to managers only by default (no need to make a roles map GS
+       export) -->
+
+  <permission
+     id="aws.authrss.PurgeTokens"
+     title="Plone Site Setup: RSS authentication tokens"
+     />
 
   <include package=".browser" />
 
-  <!-- Purge granted to managers only by default (no need to make a roles map GS export) -->
-
-  <permission
-     id="aws.authrss.PurgeToken"
-     title="Plone Site Setup: Purge RSS authentication tokens"
-     />
 
   <genericsetup:registerProfile
      name="default"

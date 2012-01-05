@@ -1,0 +1,5 @@
+<object name="portal_kss">
+    <kineticstylesheet
+        cacheable="True" compression="safe" cookable="True"
+        enabled="1" expression="" id="++resource++aws.authrss/authrss.kss"/>
+</object>

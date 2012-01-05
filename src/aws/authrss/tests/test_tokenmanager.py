@@ -4,6 +4,7 @@
 import unittest2 as unittest
 from aws.authrss.tests.resources import AWS_AUTHRSS_INTEGRATION_TESTING
 
+from zope.interface.verify import verifyObject
 from zope.component import getUtility
 from Products.CMFCore.utils import getToolByName
 
@@ -20,6 +21,13 @@ class TestTokenManager(unittest.TestCase):
         self.qi_tool = getToolByName(self.portal, 'portal_quickinstaller')
         self.token_mgr = getUtility(ITokenManager)
         self.bar_token = self.token_mgr.tokenForUserId('bar')
+        return
+
+    def test_interface(self):
+        """The ITokenManager interface is fully implemented
+        """
+        self.assertTrue(verifyObject(ITokenManager, self.token_mgr),
+                        "Interface is not fully implemented")
         return
 
     def test_new_token(self):

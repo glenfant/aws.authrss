@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<object name="portal_controlpanel"
+        xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+        i18n:domain="aws.authrss">
+  <configlet title="Authenticated RSS"
+             action_id="auth-rss"
+             appId="aws.authrss"
+             category="Products"
+             condition_expr=""
+             icon_expr="string:$portal_url/rss.png"
+             url_expr="string:${portal_url}/@@rss-token-controlpanel"
+             visible="True"
+             i18n:attributes="title">
+    <permission>Plone Site Setup: RSS authentication tokens</permission>
+  </configlet>
+</object>

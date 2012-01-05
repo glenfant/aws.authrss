@@ -55,3 +55,9 @@ class DefaultTokenManager(Persistent):
         del self._uid2token[user_id]
         del self._token2uid[token]
         return
+
+    def knownUserIds(self):
+        """See ITokensManager
+        """
+        for user_id in self._uid2token.keys():
+            yield user_id

@@ -37,7 +37,7 @@ Installation
 Production site
 ---------------
 
-As usual in your ``zc.buildout`` configuration ::
+As usual in your ``zc.buildout`` configuration: ::
 
   [instance]
   recipe = plone.recipe.zope2instance
@@ -48,7 +48,7 @@ As usual in your ``zc.buildout`` configuration ::
 Development site
 ----------------
 
-Developers of ``aws.authrss`` should use this ::
+Developers of ``aws.authrss`` should use this: ::
 
   [instance]
   recipe = plone.recipe.zope2instance
@@ -66,12 +66,12 @@ Customization
 =============
 
 ``aws.authrss`` comes with its own tokens manager that stores tokens in an
-OOBtree. See the module ``aws.authrss.tokenmanager.DefaulttokenManager``.
+``OOBtree``. See the module ``aws.authrss.tokenmanager.DefaulttokenManager``.
 
-You may proide your own tokens manager registering an utility that implements
+You may provide your own tokens manager registering an utility that implements
 ``aws.authrss.interfaces.ITokenManager`` in your component's
 ``override.zcml``. Then install this local utility using a GenericSetup
-``componentregistry.xml`` file like this one ::
+``componentregistry.xml`` file like this one: ::
 
   <?xml version="1.0"?>
   <componentregistry>
@@ -83,12 +83,28 @@ You may proide your own tokens manager registering an utility that implements
     </utilities>
   </componentregistry>
 
+Credits
+=======
+
+This Plone component is sponsored by `Alter Way <http://www.alterway.fr/>`_
+
+Links
+=====
+
+At github.com
+  https://github.com/glenfant/aws.authrss
+
+At the cheeseshop
+  http://pypi.python.org/pypi/aws.authrss
 
 Planned features
 ================
 
 Provide the same authenticated RSS feeds to search results but this requires to
-override the standard ``search.py`` template, and I hate overriding
+override the standard ``search`` template machinery, and I hate overriding
 templates. Patches are welcome.
 
+Do not assign tokens to users authenticated from an user folder that's not in
+the Plone site.
 
+Add unit tests to KSS handlers (Any help appreciated).

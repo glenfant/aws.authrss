@@ -2,6 +2,11 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser">
 
+  <browser:resourceDirectory
+      name="aws.authrss"
+      directory="static"
+      />
+
   <!-- Eek, there should be some ISyndicatable somewhere, but... -->
 
   <browser:view
@@ -19,5 +24,41 @@
      layer="aws.authrss.interfaces.IAuthRSSLayer"
      permission="zope.Public"
      />
+  
+  <browser:page
+      name="personal-rss-token"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".views.PersonalTokenView"
+      template="templates/personal_token.pt"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
+      permission="cmf.SetOwnProperties"
+      />
+
+  <browser:page
+      name="rss-token-controlpanel"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".views.ControlPanelView"
+      template="templates/controlpanel.pt"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
+      permission="aws.authrss.PurgeTokens"
+      />
+
+  <!-- KSS actions -->
+
+  <browser:page
+      name="reset_rss_auth_token"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".views.KSSTokensUtils"
+      attribute="resetToken"
+      permission="cmf.SetOwnProperties"
+      />
+
+  <browser:page
+      name="purge_rss_auth_tokens"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".views.KSSTokensUtils"
+      attribute="purgeTokens"
+      permission="aws.authrss.PurgeTokens"
+      />
 
 </configure>

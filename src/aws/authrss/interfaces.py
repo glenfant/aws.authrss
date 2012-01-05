@@ -32,3 +32,7 @@ class ITokenManager(Interface):
     def pruneUserId(user_id):
         """Remove the token for an user about to be removed
         """
+
+    def knownUserIds():
+        """An iterable over (or sequence of) registered user ids
+        """

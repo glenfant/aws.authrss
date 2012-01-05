@@ -1,0 +1,39 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/prefs_main_template/macros/master"
+      i18n:domain="aws.authrss">
+
+  <metal:main fill-slot="prefs_configlet_main">
+    <a href=""
+       i18n:domain="plone"
+       id="setup-link"
+       tal:attributes="href string:$portal_url/plone_control_panel"
+       i18n:translate="">
+      Site Setup
+    </a> &rsaquo;
+
+    <h1 class="documentFirstHeading" i18n:translate="">Authenticated RSS tokens</h1>
+
+    <div class="documentDescription" i18n:translate="">
+      Authenticated users RSS tokens maintenance
+    </div>
+    <fieldset>
+      <legend i18n:translate="">Remove tokens of removed users</legend>
+      <p i18n:translate="purge_explain">
+        You may remove the tokens of gone user clicking the button below. This
+        will reduce a little the size of the database and speed up token <->
+        user lookup.
+      </p>
+      <button class="context"
+              id="aws-authrss-totens-purge"
+              name="aws-authrss-totens-purge"
+              i18n:translate=""
+              >
+        Cleanup
+      </button>
+    </fieldset>
+  </metal:main>
+
+</html>

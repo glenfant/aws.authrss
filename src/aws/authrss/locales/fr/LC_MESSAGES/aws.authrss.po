@@ -1,0 +1,93 @@
+# French labels for aws.authrss
+# Gilles Lenfant <gilles.lenfant@alterway.fr>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: aws.authrss 1.0.0\n"
+"POT-Creation-Date: 2012-01-05 16:14+0000\n"
+"PO-Revision-Date: 2012-01-05 15:53+0000\n"
+"Last-Translator: Gilles Lenfant <gilles.lenfant@alterway.fr>\n"
+"Language-Team: Plone.fr <nobody@plone.fr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: fr\n"
+"Language-Name: Français\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: aws.authrss\n"
+
+#: aws/authrss/profiles/default/controlpanel.xml
+msgid "Authenticated RSS"
+msgstr "RSS authentifié"
+
+#: aws/authrss/browser/templates/controlpanel.pt:17
+msgid "Authenticated RSS tokens"
+msgstr "Jetons RSS authentifié"
+
+#: aws/authrss/browser/templates/controlpanel.pt:19
+msgid "Authenticated users RSS tokens maintenance"
+msgstr "Maintenance des jetons RSS authentifié"
+
+#: aws/authrss/browser/templates/controlpanel.pt:29
+msgid "Cleanup"
+msgstr "Nettoyer"
+
+#: aws/authrss/browser/templates/personal_token.pt:9
+msgid "My RSS token"
+msgstr "Mon jeton RSS"
+
+#: aws/authrss/profiles/default/actions.xml
+msgid "RSS Token"
+msgstr "Jeton RSS"
+
+#: aws/authrss/browser/templates/controlpanel.pt:23
+msgid "Remove tokens of removed users"
+msgstr "Supprimer les jetons des utilisateurs révoqués"
+
+#: aws/authrss/browser/templates/personal_token.pt:39
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: aws/authrss/profiles/default/actions.xml
+msgid "View or reset your RSS token"
+msgstr "Voir ou réinitialiser votre jeton RSS"
+
+#: aws/authrss/browser/templates/personal_token.pt:30
+msgid "Your token"
+msgstr "Votre jeton"
+
+#. Default: "Your private RSS token grants your privileges to your favorite RSS reader that may show up summary and links to contents you are allowed to view when authenticated on this site."
+#: aws/authrss/browser/templates/personal_token.pt:11
+msgid "explain_rss_token_1"
+msgstr "Votre jeton RSS privé vous octroie vos privilèges lors de la lecture par votre aggrégateur RSS favori, qui vous fournit allors les liens et résumés des contenus pertinents que vous êtes autorisé à voir dans ce site."
+
+#. Default: "This RSS token does <strong>not</strong> reveal your login or password for this site, nor grant another user who knows your token to anything else than reading a private RSS feed."
+#: aws/authrss/browser/templates/personal_token.pt:16
+msgid "explain_rss_token_2"
+msgstr "Ce jeton RSS n'est <strong>pas</strong> composé avec votre login ou mot de passe sur ce site, et n'autorise pas un utilisateur connaissant votre jeton d'accéder à autre-chose que vos fils RSS authentifiés."
+
+#. Default: "You may reset here this token at any time. If you reset this token, your next visit to your favorite RSS reader will show only summary and links to contents available to anonymous users. In order to have your private contents available in your RSS reader, you will need to edit its RSS feeds settings to this site and replace the previous token value by the one displayed below."
+#: aws/authrss/browser/templates/personal_token.pt:21
+msgid "explain_rss_token_3"
+msgstr "Vous pouvez réinitialiser votre jeton à n'importe quel moment. Si vous réinitialisez ce jeton, les fils affichés lors de la prochaine visite de votre aggrégateur RSS favori ne fournira plus que les résumés et liens des éléments accessibles aux utilisateurs anonymes. Pour récupérer vos fils RSS authentifiés dans votre aggrégateur RSS favori, vous devrez remplacer dans celui-ci les occurence de votre ancien jeton par votre nouveau jeton."
+
+#. Default: "Invalid token"
+#: aws/authrss/browser/views.py:72
+msgid "invalid_token"
+msgstr "Jeton invalide"
+
+#. Default: "${pruned} unknown user(s) have been removed from RSS tokens registry"
+#: aws/authrss/browser/views.py:113
+msgid "msg_pruned_users"
+msgstr "${pruned} utilisateur(s) inconnu(s) ont été supprimés du registre des jetons RSS"
+
+#. Default: "Your RSS token has been changed"
+#: aws/authrss/browser/views.py:94
+msgid "msg_token_changed"
+msgstr "Vous avez un nouveau jeton RSS."
+
+#. Default: "You may remove the tokens of gone user clicking the button below. This will reduce a little the size of the database and speed up token <-> user lookup."
+#: aws/authrss/browser/templates/controlpanel.pt:24
+msgid "purge_explain"
+msgstr "Vous pouvez supprimer les jetons des utilisateurs révoqués en cliquant le bouton ci-dessous. Ceci réduira la taille de la base de données des jetons et accélèrera les performances des fonctionnalités associées."
+
