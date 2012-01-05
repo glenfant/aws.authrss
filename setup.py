@@ -13,12 +13,12 @@ version = read('src', 'aws', 'authrss', 'version.txt')
 
 long_description = (
     read('README.rst')
-    + '\n' +
+    + '\n\n' +
     'Contributors\n'
     '============\n'
-    + '\n' +
+    + '\n\n' +
     read('CONTRIBUTORS.txt')
-    + '\n' +
+    + '\n\n' +
     read('CHANGES.txt')
     + '\n')
 

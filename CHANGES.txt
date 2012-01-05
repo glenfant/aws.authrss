@@ -1,8 +1,14 @@
 Changelog
 =========
 
-1.0.0dev (unreleased)
----------------------
+1.0.0a2
+-------
+
+- Fixed packaging issues.
+  [glenfant]
+
+1.0.0a1
+-------
 
 - First public version
   [glenfant]
