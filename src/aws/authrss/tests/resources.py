@@ -2,8 +2,13 @@
 # $Id$
 """Test fixures and resources"""
 
+import base64
 from cStringIO import StringIO
 from lxml import etree
+
+from zope.configuration import xmlconfig
+
+from plone.testing.z2 import Browser
 
 from plone.app.testing import (
     PLONE_FIXTURE, PloneSandboxLayer, IntegrationTesting, FunctionalTesting,
@@ -11,8 +16,6 @@ from plone.app.testing import (
     SITE_OWNER_NAME, SITE_OWNER_PASSWORD,
     TEST_USER_NAME, TEST_USER_ID, TEST_USER_PASSWORD
     )
-
-from zope.configuration import xmlconfig
 
 
 class AwsAuthrss(PloneSandboxLayer):
@@ -55,15 +58,15 @@ class AuthRssFunctionalTesting(FunctionalTesting):
     def anonymous_browser(self):
         """Browser of anonymous
         """
-        from plone.testing.z2 import Browser
         browser = Browser(self['app'])
         browser.handleErrors = False
         return browser
 
     def _auth_browser(self, login, password):
         """Browser of authenticated user
+        :param login: A known user login
+        :param password: The password for this user
         """
-        import base64
         browser = self.anonymous_browser()
 
         basic_auth = 'Basic {0}'.format(
@@ -74,16 +77,19 @@ class AuthRssFunctionalTesting(FunctionalTesting):
 
     def manager_browser(self):
         """Browser with Manager authentication
+        :return: Browser object with manager HTTP basic authentication header
         """
         return self._auth_browser(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
     def member_browser(self):
         """Browser with Member authentication
+        :return: Browser object with member HTTP basic authentication header
         """
         return self._auth_browser(TEST_USER_NAME, TEST_USER_PASSWORD)
 
     def enable_syndication(self, item):
         """Grants syndication shortcut
+        :param item: Plone folder or topic
         """
         # FIXME: login(portal, SITE_OWNER_NAME) raises an AttributeError
         # That's why the TEST_USER_NAME has temporarily the Manager role
@@ -102,6 +108,7 @@ class AuthRssFunctionalTesting(FunctionalTesting):
     def rss_feed_urls(self, feed):
         """URLs of an RSS feed
         :param feed: an RSS feed as XML string
+        :return: sequence of tarrget URLs of the feed
         """
         namespaces = {
             'rdf': "http://www.w3.org/1999/02/22-rdf-syntax-ns#",

@@ -149,6 +149,7 @@ Same as above but users must be reviewers to see this one::
   >>> workflow_tool.getInfoFor(title2_doc, 'review_state')
   'pending'
 
+
 Checking the availability of various contents
 ---------------------------------------------
 
@@ -194,10 +195,97 @@ But he cannot view the last URL of the feed::
   ...
   Unauthorized: ...
 
+Checking the syndication of a Topic / Collection
+================================================
+
+This works for a topic too. Let's make a topic for which these two documents
+match, without workflow state criterion.
+
+Creating the topic
+------------------
+
+We create a topic named 'foo-topic' and publish it.
+
+  >>> mgr_browser.open(portal_url + '/createObject?type_name=Topic')
+  >>> mgr_browser.getControl(name='title').value = 'Foo Topic'
+  >>> mgr_browser.getControl(name='form.button.save').click()
+  >>> foo_topic_url = mgr_browser.url
+  >>> mgr_browser.open(foo_topic_url +
+  ...                  '/content_status_modify?workflow_action=publish')
+  >>> foo_topic_url
+  'http://nohost/plone/foo-topic/'
+
+We set this topic's criteria such both above created documents appear in it.
+Note that I do this with the API and not with the browser (too noisy)::
+
+  >>> topic = portal['foo-topic']
+  >>> _ = topic.addCriterion('portal_type', 'ATPortalTypeCriterion')
+  >>> _.setValue(['Document'])
+  >>> _ = topic.addCriterion('path', 'ATPathCriterion')
+  >>> _.setValue([foo_folder.UID()])
+  >>> transaction.commit()
+
+Viewing the Topic
+-----------------
+
+We can now view that topic as Member::
+
+  >>> member_browser.open(foo_topic_url)
+  >>> 'Title 1' in member_browser.contents
+  True
+  >>> 'Title 2' in member_browser.contents
+  True
+
+This topic is also viewable by the anonymous user, but he should not see the
+'Title 2' document that's in "pending" workflow status::
+
+  >>> anon_browser.open(foo_topic_url)
+  >>> 'Title 1' in anon_browser.contents
+  True
+  >>> 'Title 2' in anon_browser.contents
+  False
+
+Checking the topic syndication link
+-----------------------------------
+
+For the anonymous user::
+
+  >>> tree = etree.HTML(anon_browser.contents)
+  >>> links = tree.xpath("//li[@id='document-action-private_rss']/a")
+  >>> len(links)
+  1
+  >>> anon_rss_url = links[0].attrib['href']
+  >>> anon_rss_url
+  'http://nohost/plone/foo-topic/RSS'
+
+For the member::
+
+  >>> tree = etree.HTML(member_browser.contents)
+  >>> links = tree.xpath("//li[@id='document-action-private_rss']/a")
+  >>> len(links)
+  1
+  >>> member_rss_url = links[0].attrib['href']
+  >>> member_rss_url.startswith('http://nohost/plone/foo-topic/AUTH-RSS?token=')
+  True
+
+Checking the feeds of the Topic
+-------------------------------
+
+The anonymous feed URL::
+
+  >>> anon_browser.open(anon_rss_url)
+  >>> feed_urls = layer.rss_feed_urls(anon_browser.contents)
+  >>> feed_urls
+  ['http://nohost/plone/foo/title-1']
+
+And the member feed URL but as anonymous::
+  >>> anon_browser.open(member_rss_url)
+  >>> feed_urls = layer.rss_feed_urls(anon_browser.contents)
+  >>> feed_urls
+  ['http://nohost/plone/foo/title-1', 'http://nohost/plone/foo/title-2']
+
 Resetting the personal token
 ============================
-
-
 
 Checking the action link to the personal token
 ----------------------------------------------

@@ -18,7 +18,7 @@ the Plone RSS feeds. Such feeds provide all elements the user is entitled to
 view, when authenticated in the Plone site with a browser, and of course,
 relevant to the feed (Folder, Collection, ...)
 
-Each user may have a private token he can change every times he wants in his
+Each user may have a private token he can change whenever he wants in his
 personal preferences. This token is part of the query string of the
 authenticated RSS field, and identifies the user **only** for the RSS feeds.
 
@@ -65,8 +65,22 @@ site in the **Upgrades** tab.
 Customization
 =============
 
+Integrators
+-----------
+
+``aws.authrss`` adds the authenticated RSS link with the
+``portal_actions/document_actions/private_rss`` action in your site. You may
+move this action (cut / paste) anywhere you want, as long as you keep its
+properties unchanged.
+
+You may hide the standard ``portal_action/document_actions/rss`` action that is
+now useless.
+
+Developers
+----------
+
 ``aws.authrss`` comes with its own tokens manager that stores tokens in an
-``OOBtree``. See the module ``aws.authrss.tokenmanager.DefaulttokenManager``.
+``OOBtree``. See the class ``aws.authrss.tokenmanager.DefaultTokenManager``.
 
 You may provide your own tokens manager registering an utility that implements
 ``aws.authrss.interfaces.ITokenManager`` in your component's
@@ -91,10 +105,10 @@ This Plone component is sponsored by `Alter Way <http://www.alterway.fr/>`_
 Links
 =====
 
-At github.com
+At github.com (contributors)
   https://github.com/glenfant/aws.authrss
 
-At the cheeseshop
+At the cheeseshop (integrators)
   http://pypi.python.org/pypi/aws.authrss
 
 Planned features
