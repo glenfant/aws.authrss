@@ -16,7 +16,6 @@ class AuthRSSLinkViewlet(RSSViewlet, AuthRSSViewMixin):
         - 'url': The RSS URL is 'allowed' is True
         """
         super(AuthRSSLinkViewlet, self).update()
-        import pydevd;pydevd.settrace()
         if self.allowed and not self.isUserAnonymous():
 
             # Okay we may rebuild the URL
