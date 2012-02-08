@@ -50,6 +50,7 @@
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       class=".views.KSSTokensUtils"
       attribute="resetToken"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
       permission="cmf.SetOwnProperties"
       />
 
@@ -58,7 +59,36 @@
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       class=".views.KSSTokensUtils"
       attribute="purgeTokens"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
       permission="aws.authrss.PurgeTokens"
+      />
+
+  <!-- Search page resources -->
+
+  <browser:view
+      for="*"
+      name="auth-rss-search-page-js-enabled"
+      class=".views.SearchPageModifierEnabler"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
+      permission="zope2.View"
+      />
+
+  <browser:view
+      for="*"
+      name="auth-rss-search-page-js"
+      class=".views.SearchPageModifierJS"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
+      permission="zope2.View"
+      />
+
+  <!-- We override the plone.app.layout.links.viewlets.RSSViewlet -->
+
+  <browser:viewlet
+      name="plone.links.RSS"
+      manager="plone.app.layout.viewlets.interfaces.IHtmlHeadLinks"
+      class=".viewlets.RSSViewlet"
+      permission="zope2.View" 
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
       />
 
 </configure>

@@ -1,31 +1,19 @@
 # -*- coding: utf-8 -*-
 # $Id$
 """Views (z3) for aws.authrss"""
-
+try:
+    import simplejson as json
+except ImportError:
+    import json
 from zope.component import getMultiAdapter, getUtility
 from Products.Five import BrowserView
 from plone.app.kss.plonekssview import PloneKSSView
 from kss.core import kssaction
+from ZTUtils import make_query
 
 from aws.authrss import aws_authrss_messagefactory as _
 from aws.authrss.interfaces import ITokenManager
-from aws.authrss.utils import GrantPrivilegesForToken
-
-
-class AuthRSSViewMixin(object):
-    """Mixin class for some utilities common to various views
-    """
-    def tokenForThisUser(self):
-        """Token for authenticated user or None for anonymous
-        """
-        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
-        if not portal_state.anonymous():
-
-            # We have an authenticated member
-            user_id = portal_state.member().getId()
-            token_mgr = getUtility(ITokenManager)
-            return token_mgr.tokenForUserId(user_id)
-        return None
+from aws.authrss.utils import GrantPrivilegesForToken, AuthRSSViewMixin
 
 
 class RSSLinkView(BrowserView, AuthRSSViewMixin):
@@ -34,10 +22,7 @@ class RSSLinkView(BrowserView, AuthRSSViewMixin):
     def __call__(self, *args, **kwargs):
         """Runs the view
         """
-        token = self.tokenForThisUser()
-        method = '/AUTH-RSS?token={0}'.format(token) if token is not None else '/RSS'
-        context_state = getMultiAdapter((self.context, self.request), name=u'plone_context_state')
-        return context_state.object_url() + method
+        return self.authRSSFolderishLink()
 
 
 class AuthRSSView(BrowserView):
@@ -59,9 +44,10 @@ class PersonalTokenView(BrowserView, AuthRSSViewMixin):
         super(PersonalTokenView, self).__init__(*args, **kwargs)
 
         # Hiding content tabs and portlets
-        self.request.set('disable_border', 1)
-        self.request.set('disable_plone.leftcolumn', 1)
-        self.request.set('disable_plone.rightcolumn', 1)
+        request_set = self.request.set
+        request_set('disable_border', 1)
+        request_set('disable_plone.leftcolumn', 1)
+        request_set('disable_plone.rightcolumn', 1)
         return
 
     def tokenValue(self):
@@ -73,17 +59,17 @@ class PersonalTokenView(BrowserView, AuthRSSViewMixin):
         return token
 
 
-class KSSTokensUtils(PloneKSSView):
+class KSSTokensUtils(PloneKSSView, AuthRSSViewMixin):
     """KSS actions handler
     """
     @kssaction
     def resetToken(self):
         """Reset the user's token
         """
-        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
-        if portal_state.anonymous():
+        if self.isUserAnonymous():
             return
 
+        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         user_id = portal_state.member().getId()
         token_mgr = getUtility(ITokenManager)
         new_token = token_mgr.resetToken(user_id)
@@ -121,4 +107,54 @@ class KSSTokensUtils(PloneKSSView):
 class ControlPanelView(BrowserView):
     """Control panel
     """
+    # Just a placeholder for future features.
     pass
+
+###
+# Search results related resources
+# Note that this is somehow ugly but there's no other way to do this
+###
+
+class SearchPageModifierEnabler(BrowserView):
+    def __call__(self, *args, **kwargs):
+        # Are we on the "search" template (results)
+        import pydevd;pydevd.settrace()
+        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
+        return self.request.HTTP_REFERER.startswith(portal_state.portal_url() + '/search')
+
+
+AUTH_SEARCH_RSS_JS_TPL = """\
+// Tweaking the links to RSS
+$(function() {{
+  var rss_url = {0};
+  // Link in the header
+  $('link[type="application/rss+xml"]').attr('href', rss_url);
+  // Link in the results
+  $('a[class="link-feed"]').attr('href', rss_url);
+}});
+"""
+
+class SearchPageModifierJS(BrowserView, AuthRSSViewMixin):
+    """Provides resources for changing links into the search results page
+    """
+    def __call__(self):
+        """Make the user specific JS and tweaks the response accordingly
+        """
+        # Never cache this, even if distributed through squid/varnish
+        request = self.request
+        response_header = request.RESPONSE.setHeader
+        response_header(
+            'Cache-Control',
+            'no-cache, no-store, max-age=0, private, must-revalidate, pre-check=0, post-check=0'
+            )
+        response_header('Content-Type', 'application/javascript')
+
+        # Let's make a JS response
+        # Note that the user is authenticated at this step and has necessarily a token
+        token = self.tokenForThisUser()
+        context_state = getMultiAdapter((self.context, request), name=u'plone_context_state')
+        context_url = context_state.object_url()
+        query = make_query(self.request.form, token=token)
+        rss_url = context_url + '/AUTH-SEARCH-RSS?' + query
+        return AUTH_SEARCH_RSS_JS_TPL.format(json.dumps(rss_url))
+

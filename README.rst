@@ -48,8 +48,19 @@ As usual in your ``zc.buildout`` configuration: ::
 Development site
 ----------------
 
-Developers of ``aws.authrss`` should use this: ::
+Developers and maintainers of ``aws.authrss`` should use this: ::
 
+  [buildout]
+  ...
+  extensions = mr.developer
+  ...
+  sources = sources
+  auto-checkout = *
+
+  [sources]
+  ...
+  # See instructions at https://github.com/glenfant/aws.authrss
+  aws.authrss = https://github.com/xxxx/aws.authrss.git
   [instance]
   recipe = plone.recipe.zope2instance
   ...
@@ -61,6 +72,12 @@ Upgrading
 
 Available upgrades may be executed from the ``portal_setup`` tool of your Plone
 site in the **Upgrades** tab.
+
+.. admonition::
+
+   For the first alpha versions, we shall not provide upgrade steps. You will
+   need to reinstall the component. Stable versions coming after the first
+   stable versions will come will all necessary upgrade steps.
 
 Customization
 =============
@@ -114,9 +131,10 @@ At the cheeseshop (integrators)
 Planned features
 ================
 
-Provide the same authenticated RSS feeds to search results but this requires to
-override the standard ``search`` template machinery, and I hate overriding
-templates. Patches are welcome.
+Add a replacement to the RSS link that is in the HTML header of topics and folders::
+
+  <link rel="alternate" href="http://somesite/foo/RSS" title="RSS 1.0"
+        type="application/rss+xml">
 
 Do not assign tokens to users authenticated from an user folder that's not in
 the Plone site.
