@@ -49,6 +49,8 @@ setup(name='aws.authrss',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'plone.uuid',
+          'plone.app.uuid',
           # -*- Extra requirements: -*-
       ],
       extras_require={'test': ['plone.app.testing', 'lxml']},
