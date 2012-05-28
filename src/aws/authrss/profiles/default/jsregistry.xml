@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<object name="portal_javascripts">
+ <javascript authenticated="False" cacheable="False" compression="safe"
+    conditionalcomment="" cookable="True" enabled="True"
+    expression="context/auth-rss-search-page-js-enabled"
+    id="auth-rss-search-page.js" inline="True"/>
+</object>
