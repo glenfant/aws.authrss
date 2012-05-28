@@ -20,6 +20,7 @@ class AuthRSSLinkViewlet(RSSViewlet, AuthRSSViewMixin):
 
             # Okay we may rebuild the URL
             self.url = self.authRSSFolderishLink()
+        return
 
 
     index = ViewPageTemplateFile('templates/rsslink.pt')

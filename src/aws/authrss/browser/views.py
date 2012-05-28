@@ -118,9 +118,8 @@ class ControlPanelView(BrowserView):
 class SearchPageModifierEnabler(BrowserView):
     def __call__(self, *args, **kwargs):
         # Are we on the "search" template (results)
-        import pydevd;pydevd.settrace()
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
-        return self.request.HTTP_REFERER.startswith(portal_state.portal_url() + '/search')
+        return self.request.URL.startswith(portal_state.portal_url() + '/search')
 
 
 AUTH_SEARCH_RSS_JS_TPL = """\
@@ -140,14 +139,15 @@ class SearchPageModifierJS(BrowserView, AuthRSSViewMixin):
     def __call__(self):
         """Make the user specific JS and tweaks the response accordingly
         """
-        # Never cache this, even if distributed through squid/varnish
         request = self.request
-        response_header = request.RESPONSE.setHeader
-        response_header(
-            'Cache-Control',
-            'no-cache, no-store, max-age=0, private, must-revalidate, pre-check=0, post-check=0'
-            )
-        response_header('Content-Type', 'application/javascript')
+        if False: # This JS bunch is actually rendered inline, so we don't need this
+            # Never cache this, even if distributed through squid/varnish
+            response_header = request.RESPONSE.setHeader
+            response_header(
+                'Cache-Control',
+                'no-cache, no-store, max-age=0, private, must-revalidate, pre-check=0, post-check=0'
+                )
+            response_header('Content-Type', 'application/javascript')
 
         # Let's make a JS response
         # Note that the user is authenticated at this step and has necessarily a token
@@ -157,4 +157,16 @@ class SearchPageModifierJS(BrowserView, AuthRSSViewMixin):
         query = make_query(self.request.form, token=token)
         rss_url = context_url + '/AUTH-SEARCH-RSS?' + query
         return AUTH_SEARCH_RSS_JS_TPL.format(json.dumps(rss_url))
+
+
+class AuthSearchRSSView(BrowserView):
+    """RSS for search results
+    """
+    def __call__(self, *args, **kwargs):
+        """Runs the view
+        """
+        token = self.request.form.get('token', 'invalid-token')
+        with GrantPrivilegesForToken(token, self.context, self.request) as sm:
+            feed = self.context.search_rss()
+        return feed
 

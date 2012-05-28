@@ -24,7 +24,7 @@
      layer="aws.authrss.interfaces.IAuthRSSLayer"
      permission="zope.Public"
      />
-  
+
   <browser:page
       name="personal-rss-token"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
@@ -75,19 +75,28 @@
 
   <browser:view
       for="*"
-      name="auth-rss-search-page-js"
+      name="auth-rss-search-page.js"
       class=".views.SearchPageModifierJS"
       layer="aws.authrss.interfaces.IAuthRSSLayer"
       permission="zope2.View"
       />
 
+  <browser:view
+     name="AUTH-SEARCH-RSS"
+     for="*"
+     class=".views.AuthSearchRSSView"
+     layer="aws.authrss.interfaces.IAuthRSSLayer"
+     permission="zope.Public"
+     />
+
   <!-- We override the plone.app.layout.links.viewlets.RSSViewlet -->
+
   <include package="plone.app.layout"/>
   <browser:viewlet
       name="plone.links.RSS"
       manager="plone.app.layout.viewlets.interfaces.IHtmlHeadLinks"
       class=".viewlets.AuthRSSLinkViewlet"
-      permission="zope2.View" 
+      permission="zope2.View"
       layer="aws.authrss.interfaces.IAuthRSSLayer"
       />
 
