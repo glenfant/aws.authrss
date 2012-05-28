@@ -1,7 +1,9 @@
 .DS_Store
 .installed.cfg
 .mr.developer.cfg
-.svn
+.project
+.pydevproject
+.settings
 *.egg-info
 *.pyc
 *.pyo
