@@ -35,7 +35,7 @@ setup(name='aws.authrss',
           "Framework :: Plone :: 4.1",
           "Natural Language :: English",
           "Natural Language :: French",
-          "Development Status :: 3 - Alpha",
+          "Development Status :: 4 - Beta",
           ],
       keywords='plone rss',
       author='Gilles Lenfant',
@@ -58,5 +58,5 @@ setup(name='aws.authrss',
       # -*- Entry points: -*-
       [z3c.autoinclude.plugin]
       target = plone
-      """,
+      """
       )
