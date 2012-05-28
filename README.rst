@@ -2,7 +2,8 @@
 aws.authrss
 ===========
 
-Access your Plone RSS feeds as authenticated user.
+Access your Plone RSS feeds as authenticated user. This feature was inspired by
+`Redmine <http://www.redmine.org/>`_.
 
 Abstract
 ========
@@ -31,6 +32,13 @@ Plays with
 Plone 4.1 only as this component is still a baby. Plone 4.0 support should not
 be that difficult (contributors are welcome).
 
+.. admonition::
+   Conflicts with...
+
+   `collective.blog.feeds <http://pypi.python.org/pypi/collective.blog.feeds>`_
+   because both override the same viewlet, and there's no possible conflict
+   resolution. Sorry.
+
 Installation
 ============
 
@@ -48,24 +56,17 @@ As usual in your ``zc.buildout`` configuration: ::
 Development site
 ----------------
 
-Developers and maintainers of ``aws.authrss`` should use this: ::
+The development package at Github comes with a suitable ``buildout.cfg``. See
+`Links`_. You just need to clone that repoitory and play the usual ``python
+bootstrap.py`` + ``bin/buildout``.
 
-  [buildout]
-  ...
-  extensions = mr.developer
-  ...
-  sources = sources
-  auto-checkout = *
+In ZMI
+------
 
-  [sources]
-  ...
-  # See instructions at https://github.com/glenfant/aws.authrss
-  aws.authrss = https://github.com/xxxx/aws.authrss.git
-  [instance]
-  recipe = plone.recipe.zope2instance
-  ...
-  eggs =
-      aws.authrss[test]
+Don't forget to enable syndication in the ``portal_syndication`` object of your
+site, and to check the ``Visible?`` checkbox of the
+``portal_actions/object/syndication`` action of your site to have the control of
+the per context syndication.
 
 Upgrading
 =========
@@ -74,6 +75,7 @@ Available upgrades may be executed from the ``portal_setup`` tool of your Plone
 site in the **Upgrades** tab.
 
 .. admonition::
+   No upgrades with alpha releases
 
    For the first alpha versions, we shall not provide upgrade steps. You will
    need to reinstall the component. Stable versions coming after the first
@@ -131,12 +133,7 @@ At the cheeseshop (integrators)
 Planned features
 ================
 
-Add a replacement to the RSS link that is in the HTML header of topics and folders::
-
-  <link rel="alternate" href="http://somesite/foo/RSS" title="RSS 1.0"
-        type="application/rss+xml">
-
 Do not assign tokens to users authenticated from an user folder that's not in
-the Plone site.
+the Plone site (i.e a Zope root manager).
 
 Add unit tests to KSS handlers (Any help appreciated).
