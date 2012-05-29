@@ -10,6 +10,7 @@
 dist/*
 bin/*
 develop-eggs/*
+downloads/*
 eggs/*
 ext-cache/*
 omelette/*
