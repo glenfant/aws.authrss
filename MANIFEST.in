@@ -1,2 +1,6 @@
 recursive-include src *
 global-exclude *.pyc
+global-exclude *.pyo
+include README.rst
+include CONTRIBUTORS.txt
+include CHANGES.txt
