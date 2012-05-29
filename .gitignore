@@ -7,4 +7,10 @@
 *.egg-info
 *.pyc
 *.pyo
-dist
+dist/*
+bin/*
+develop-eggs/*
+eggs/*
+ext-cache/*
+omelette/*
+parts/*
