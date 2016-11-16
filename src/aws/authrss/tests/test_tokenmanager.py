@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Token manager tests"""
-import unittest2 as unittest
+import unittest
 from aws.authrss.tests.resources import AWS_AUTHRSS_INTEGRATION_TESTING
 
 from zope.interface.verify import verifyObject

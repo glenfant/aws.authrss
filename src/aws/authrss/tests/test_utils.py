@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Testing resources from utils module"""
 
-import unittest2 as unittest
+import unittest
 from aws.authrss.tests.resources import AWS_AUTHRSS_INTEGRATION_TESTING
 
 from zope.component import getUtility

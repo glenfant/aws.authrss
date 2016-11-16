@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Testing browser view classes"""
 
-import unittest2 as unittest
+import unittest
 from aws.authrss.tests.resources import AWS_AUTHRSS_INTEGRATION_TESTING
 from plone.app.testing import (
     logout, login, setRoles, TEST_USER_NAME, TEST_USER_ID, TEST_USER_ROLES

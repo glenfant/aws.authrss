@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """Running doctests"""
 
-import os
-import unittest2 as unittest
+import unittest
 import doctest
 
 from plone.testing import layered
