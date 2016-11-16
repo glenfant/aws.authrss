@@ -21,7 +21,7 @@ relevant to the feed (Folder, Collection, ...)
 
 Each user may have a private token he can change whenever he wants in his
 personal preferences. This token is part of the query string of the
-authenticated RSS field, and identifies the user **only** for the RSS feeds.
+authenticated RSS feed, and identifies the user **only** for the RSS feeds.
 
 A control panel for site administrators gives the possibility to prune private
 tokens of removed users.
@@ -29,8 +29,8 @@ tokens of removed users.
 Plays with
 ==========
 
-Plone 4.1 only as this component is still a baby. Plone 4.0 support should not
-be that difficult (contributors are welcome).
+The module supports Plone 4.3 and 5.0.
+
 
 .. admonition::
    Conflicts with...
@@ -57,16 +57,14 @@ Development site
 ----------------
 
 The development package at Github comes with a suitable ``buildout.cfg``. See
-`Links`_. You just need to clone that repoitory and play the usual ``python
+`Links`_. You just need to clone that repository and play the usual ``python
 bootstrap.py`` + ``bin/buildout``.
 
-In ZMI
-------
+In Site Setup
+-------------
 
-Don't forget to enable syndication in the ``portal_syndication`` object of your
-site, and to check the ``Visible?`` checkbox of the
-``portal_actions/object/syndication`` action of your site to have the control of
-the per context syndication.
+Don't forget to enable syndication in the Syndication control panel
+and to check the ``Show feed link`` checkbox.
 
 Upgrading
 =========
@@ -87,13 +85,8 @@ Customization
 Integrators
 -----------
 
-``aws.authrss`` adds the authenticated RSS link with the
-``portal_actions/document_actions/private_rss`` action in your site. You may
-move this action (cut / paste) anywhere you want, as long as you keep its
-properties unchanged.
-
-You may hide the standard ``portal_action/document_actions/rss`` action that is
-now useless.
+``aws.authrss`` overrides the ``portal_actions/document_actions/rss`` action
+to add the authenticated RSS link in your site.
 
 Developers
 ----------
@@ -127,7 +120,7 @@ Links
 At github.com (contributors)
   https://github.com/glenfant/aws.authrss
 
-At the cheeseshop (integrators)
+At pypi (integrators)
   http://pypi.python.org/pypi/aws.authrss
 
 Planned features
@@ -135,5 +128,3 @@ Planned features
 
 Do not assign tokens to users authenticated from an user folder that's not in
 the Plone site (i.e a Zope root manager).
-
-Add unit tests to KSS handlers (Any help appreciated).
