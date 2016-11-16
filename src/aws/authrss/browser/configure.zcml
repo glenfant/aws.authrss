@@ -65,20 +65,12 @@
 -->
   <!-- Search page resources -->
 
-  <browser:view
-      for="*"
-      name="auth-rss-search-page-js-enabled"
-      class=".views.SearchPageModifierEnabler"
-      layer="aws.authrss.interfaces.IAuthRSSLayer"
-      permission="zope2.View"
-      />
-
-  <browser:view
-      for="*"
-      name="auth-rss-search-page.js"
+  <browser:viewlet
+      name="auth-rss-search-page-js"
+      manager="plone.app.layout.viewlets.interfaces.IPortalFooter"
       class=".views.SearchPageModifierJS"
-      layer="aws.authrss.interfaces.IAuthRSSLayer"
       permission="zope2.View"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
       />
 
   <browser:view

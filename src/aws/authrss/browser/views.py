@@ -13,6 +13,7 @@ except ImportError:
     class PloneKSSView(object):
         pass
 from ZTUtils import make_query
+from plone.app.layout.viewlets import ViewletBase
 
 from aws.authrss import aws_authrss_messagefactory as _
 from aws.authrss.interfaces import ITokenManager
@@ -118,14 +119,8 @@ class ControlPanelView(BrowserView):
 # Note that this is somehow ugly but there's no other way to do this
 ###
 
-class SearchPageModifierEnabler(BrowserView):
-    def __call__(self, *args, **kwargs):
-        # Are we on the "search" template (results)
-        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
-        return self.request.URL.startswith(portal_state.portal_url() + '/search')
-
-
-AUTH_SEARCH_RSS_JS_TPL = """\
+AUTH_SEARCH_RSS_JS_TPL = u"""\
+<script>
 // Tweaking the links to RSS
 $(function() {{
   var rss_url = {0};
@@ -134,26 +129,26 @@ $(function() {{
   // Link in the results
   $('a[class="link-feed"]').attr('href', rss_url);
 }});
+</script>
 """
 
-class SearchPageModifierJS(BrowserView, AuthRSSViewMixin):
+class SearchPageModifierJS(ViewletBase, AuthRSSViewMixin):
     """Provides resources for changing links into the search results page
     """
-    def __call__(self):
+    def index(self):
         """Make the user specific JS and tweaks the response accordingly
         """
-        request = self.request
-        if False: # This JS bunch is actually rendered inline, so we don't need this
-            # Never cache this, even if distributed through squid/varnish
-            response_header = request.RESPONSE.setHeader
-            response_header(
-                'Cache-Control',
-                'no-cache, no-store, max-age=0, private, must-revalidate, pre-check=0, post-check=0'
-                )
-            response_header('Content-Type', 'application/javascript')
+        if self.isUserAnonymous():
+            return u""
 
-        # Let's make a JS response
-        # Note that the user is authenticated at this step and has necessarily a token
+        # Are we on the "search" view (results)
+        portal_state = getMultiAdapter((self.context, self.request),
+                                       name=u'plone_portal_state')
+        if not self.request.URL.startswith(portal_state.portal_url() + '/search') \
+                and not self.request.URL.startswith(portal_state.portal_url() + '/@@search'):
+            return u""
+
+        request = self.request
         token = self.tokenForThisUser()
         context_state = getMultiAdapter((self.context, request), name=u'plone_context_state')
         context_url = context_state.object_url()
@@ -170,6 +165,6 @@ class AuthSearchRSSView(BrowserView):
         """
         token = self.request.form.get('token', 'invalid-token')
         with GrantPrivilegesForToken(token, self.context, self.request) as sm:
-            feed = self.context.search_rss()
+            feed = self.context.restrictedTraverse('search_rss')()
         return feed
 
