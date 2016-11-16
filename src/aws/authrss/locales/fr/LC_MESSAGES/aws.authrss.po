@@ -59,7 +59,7 @@ msgstr "Votre jeton"
 #. Default: "Your private RSS token grants your privileges to your favorite RSS reader that may show up summary and links to contents you are allowed to view when authenticated on this site."
 #: aws/authrss/browser/templates/personal_token.pt:11
 msgid "explain_rss_token_1"
-msgstr "Votre jeton RSS privé vous octroie vos privilèges lors de la lecture par votre aggrégateur RSS favori, qui vous fournit allors les liens et résumés des contenus pertinents que vous êtes autorisé à voir dans ce site."
+msgstr "Votre jeton RSS privé vous octroie vos privilèges lors de la lecture par votre aggrégateur RSS favori, qui vous fournit alors les liens et résumés des contenus pertinents que vous êtes autorisé à voir dans ce site."
 
 #. Default: "This RSS token does <strong>not</strong> reveal your login or password for this site, nor grant another user who knows your token to anything else than reading a private RSS feed."
 #: aws/authrss/browser/templates/personal_token.pt:16
