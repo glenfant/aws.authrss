@@ -81,4 +81,10 @@ class AuthRSSViewMixin(object):
         token = self.tokenForThisUser()
         method = '/AUTH-RSS?token={0}'.format(token) if token is not None else '/RSS'
         context_state = getMultiAdapter((self.context, self.request), name=u'plone_context_state')
-        return context_state.object_url() + method
+        if context_state.is_portal_root():
+            portal_state = getMultiAdapter((self.context, self.request),
+                                           name=u'plone_portal_state')
+            portal = portal_state.portal()
+            return portal.absolute_url() + method
+
+        return self.context.absolute_url() + method
