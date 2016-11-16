@@ -7,8 +7,11 @@ except ImportError:
     import json
 from zope.component import getMultiAdapter, getUtility
 from Products.Five import BrowserView
-from plone.app.kss.plonekssview import PloneKSSView
-from kss.core import kssaction
+try:
+    from plone.app.kss.plonekssview import PloneKSSView
+except ImportError:
+    class PloneKSSView(object):
+        pass
 from ZTUtils import make_query
 
 from aws.authrss import aws_authrss_messagefactory as _
@@ -62,7 +65,7 @@ class PersonalTokenView(BrowserView, AuthRSSViewMixin):
 class KSSTokensUtils(PloneKSSView, AuthRSSViewMixin):
     """KSS actions handler
     """
-    @kssaction
+    #@kssaction
     def resetToken(self):
         """Reset the user's token
         """
@@ -82,7 +85,7 @@ class KSSTokensUtils(PloneKSSView, AuthRSSViewMixin):
               )
         return
 
-    @kssaction
+    #@kssaction
     def purgeTokens(self):
         """Remove the tokens of unknown or gone users
         """

@@ -44,7 +44,7 @@
       />
 
   <!-- KSS actions -->
-
+<!--
   <browser:page
       name="reset_rss_auth_token"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
@@ -62,7 +62,7 @@
       layer="aws.authrss.interfaces.IAuthRSSLayer"
       permission="aws.authrss.PurgeTokens"
       />
-
+-->
   <!-- Search page resources -->
 
   <browser:view
