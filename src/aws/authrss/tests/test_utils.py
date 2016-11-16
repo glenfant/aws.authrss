@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# $Id$
 """Testing resources from utils module"""
 
 import unittest2 as unittest

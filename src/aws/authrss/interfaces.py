@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# $Id$
 """Public interfaces of aws.authrss"""
 
 from zope.interface import Interface

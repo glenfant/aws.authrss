@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# $Id$
 """Views (z3) for aws.authrss"""
 try:
     import simplejson as json

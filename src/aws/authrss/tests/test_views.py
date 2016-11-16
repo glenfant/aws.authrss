@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# $Id$
 """Testing browser view classes"""
 
 import unittest2 as unittest

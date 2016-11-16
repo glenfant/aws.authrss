@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# $Id$
 """Test fixures and resources"""
 
 import base64

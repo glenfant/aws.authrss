@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# $Id: updatelocales.py 246082 2011-11-01 19:39:09Z glenfant $
 """\
 i18n files maintenance utility. Please read the README.txt beside this
 file.  Portions of this code have been stolen from

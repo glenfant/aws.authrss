@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# $Id$
 """The default tokens manager"""
 
 from zope.interface import implements

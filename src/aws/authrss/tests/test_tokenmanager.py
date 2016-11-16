@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# $Id$
 """Token manager tests"""
 import unittest2 as unittest
 from aws.authrss.tests.resources import AWS_AUTHRSS_INTEGRATION_TESTING

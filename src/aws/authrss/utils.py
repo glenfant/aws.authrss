@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# $Id$
 """Misc utilities for aws.authrss"""
 
 from zope.component import getUtility, getMultiAdapter
