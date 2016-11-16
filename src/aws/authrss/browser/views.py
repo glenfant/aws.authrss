@@ -36,7 +36,7 @@ class AuthRSSView(BrowserView):
         """
         token = self.request.form.get('token', 'invalid-token')
         with GrantPrivilegesForToken(token, self.context, self.request) as sm:
-            feed = self.context.RSS()
+            feed = self.context.restrictedTraverse('RSS')()
         return feed
 
 
