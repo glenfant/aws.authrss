@@ -2,13 +2,6 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser">
 
-  <browser:resourceDirectory
-      name="aws.authrss"
-      directory="static"
-      />
-
-  <!-- Eek, there should be some ISyndicatable somewhere, but... -->
-
   <browser:view
      name="auth-rss-link"
      for="*"
