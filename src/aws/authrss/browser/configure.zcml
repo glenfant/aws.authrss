@@ -20,7 +20,7 @@
 
   <browser:page
       name="personal-rss-token"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.app.layout.navigation.interfaces.INavigationRoot"
       class=".views.PersonalTokenView"
       template="templates/personal_token.pt"
       layer="aws.authrss.interfaces.IAuthRSSLayer"
