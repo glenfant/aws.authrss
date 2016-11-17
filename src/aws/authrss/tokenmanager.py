@@ -25,9 +25,7 @@ class DefaultTokenManager(Persistent):
     def userIdForToken(self, token):
         """See ITokensManager
         """
-        if token in self._token2uid:
-            return self._token2uid[token]
-        return
+        return self._token2uid.get(token, None)
 
     def tokenForUserId(self, user_id):
         """See ITokensManager
@@ -41,6 +39,10 @@ class DefaultTokenManager(Persistent):
     def resetToken(self, user_id):
         """See ITokensManager
         """
+        old_token = self._uid2token.get(user_id, None)
+        if old_token is not None:
+            del self._token2uid[old_token]
+
         generator = getUtility(IUUIDGenerator)
         token = generator()
         self._token2uid[token] = user_id
@@ -53,7 +55,6 @@ class DefaultTokenManager(Persistent):
         token = self._uid2token[user_id]
         del self._uid2token[user_id]
         del self._token2uid[token]
-        return
 
     def knownUserIds(self):
         """See ITokensManager
