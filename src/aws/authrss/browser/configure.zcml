@@ -43,12 +43,11 @@
       permission="aws.authrss.PurgeTokens"
       />
 
-  <!-- KSS actions -->
-<!--
+  <!-- Ajax actions -->
   <browser:page
       name="reset_rss_auth_token"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      class=".views.KSSTokensUtils"
+      class=".views.AjaxTokensUtils"
       attribute="resetToken"
       layer="aws.authrss.interfaces.IAuthRSSLayer"
       permission="cmf.SetOwnProperties"
@@ -57,14 +56,13 @@
   <browser:page
       name="purge_rss_auth_tokens"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      class=".views.KSSTokensUtils"
+      class=".views.AjaxTokensUtils"
       attribute="purgeTokens"
       layer="aws.authrss.interfaces.IAuthRSSLayer"
       permission="aws.authrss.PurgeTokens"
       />
--->
-  <!-- Search page resources -->
 
+  <!-- Search page resources -->
   <browser:viewlet
       name="auth-rss-search-page-js"
       manager="plone.app.layout.viewlets.interfaces.IPortalFooter"

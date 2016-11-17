@@ -4,13 +4,9 @@ try:
     import simplejson as json
 except ImportError:
     import json
+from zope.i18n import translate
 from zope.component import getMultiAdapter, getUtility
 from Products.Five import BrowserView
-try:
-    from plone.app.kss.plonekssview import PloneKSSView
-except ImportError:
-    class PloneKSSView(object):
-        pass
 from ZTUtils import make_query
 from plone.app.layout.viewlets import ViewletBase
 
@@ -62,10 +58,9 @@ class PersonalTokenView(BrowserView, AuthRSSViewMixin):
         return token
 
 
-class KSSTokensUtils(PloneKSSView, AuthRSSViewMixin):
-    """KSS actions handler
+class AjaxTokensUtils(BrowserView, AuthRSSViewMixin):
+    """Ajax actions handler
     """
-    #@kssaction
     def resetToken(self):
         """Reset the user's token
         """
@@ -76,16 +71,13 @@ class KSSTokensUtils(PloneKSSView, AuthRSSViewMixin):
         user_id = portal_state.member().getId()
         token_mgr = getUtility(ITokenManager)
         new_token = token_mgr.resetToken(user_id)
-        core_cs = self.getCommandSet('core')
-        core_cs.setAttribute('#aws-authrss-token-value', 'value', new_token)
-        plone_cs = self.getCommandSet('plone')
-        plone_cs.issuePortalMessage(
-            _(u'msg_token_changed',
-              default=u"Your RSS token has been changed")
-              )
-        return
+        return json.dumps({'success': True,
+            'message': translate(_(u'msg_token_changed',
+                 default=u"Your RSS token has been changed"),
+                 context=self.request),
+            'token': new_token
+        })
 
-    #@kssaction
     def purgeTokens(self):
         """Remove the tokens of unknown or gone users
         """
@@ -97,14 +89,14 @@ class KSSTokensUtils(PloneKSSView, AuthRSSViewMixin):
             if mtool.getMemberById(user_id) is None:
                 token_mgr.pruneUserId(user_id)
                 pruned += 1
-        plone_cs= self.getCommandSet('plone')
+
         message = _(
             u'msg_pruned_users',
             default=u"${pruned} unknown user(s) have been removed from RSS tokens registry",
-            mapping={u'pruned': str(pruned)}
-            )
-        plone_cs.issuePortalMessage(message)
-        return
+            mapping={u'pruned': str(pruned)})
+        return json.dumps({'success': True,
+            'message': translate(message, context=self.request),
+        })
 
 
 class ControlPanelView(BrowserView):

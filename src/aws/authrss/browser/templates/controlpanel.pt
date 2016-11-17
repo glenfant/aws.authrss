@@ -27,13 +27,31 @@
         user lookup.
       </p>
       <button class="context"
-              id="aws-authrss-totens-purge"
-              name="aws-authrss-totens-purge"
+              id="aws-authrss-tokens-purge"
+              name="aws-authrss-tokens-purge"
               i18n:translate=""
               >
         Cleanup
       </button>
     </fieldset>
+    <script>
+(function($){
+$(document).ready(function() {
+  var baseUrl = $('base').attr('href') || $('body').attr('data-portal-url');
+  $('#aws-authrss-tokens-purge').click(function(e) {
+    e.preventDefault();
+    $.post(baseUrl + '/purge_rss_auth_tokens', {}, function(data) {
+      $('#global_statusmessage').html(
+        '<div class="portalMessage info" role="alertdialog" aria-labelledby="dialogTitle">' +
+        '  <strong id="dialogTitle">Info</strong>' +
+        '  <span>' + data.message + '</span>' +
+        '</div>'
+      );
+    }, 'json');
+  });
+});
+})(jQuery);
+    </script>
   </metal:main>
 
 </html>

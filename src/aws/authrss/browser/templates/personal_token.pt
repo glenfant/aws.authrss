@@ -44,5 +44,24 @@
         Reset
       </button>
     </fieldset>
+    <script>
+(function($){
+$(document).ready(function() {
+  var baseUrl = $('base').attr('href') || $('body').attr('data-portal-url');
+  $('#aws-authrss-token-reset').click(function(e) {
+    e.preventDefault();
+    $.post(baseUrl + '/reset_rss_auth_token', {}, function(data) {
+      $('#aws-authrss-token-value').val(data.token);
+      $('#global_statusmessage').html(
+        '<div class="portalMessage info" role="alertdialog" aria-labelledby="dialogTitle">' +
+        '  <strong id="dialogTitle">Info</strong>' +
+        '  <span>' + data.message + '</span>' +
+        '</div>'
+      );
+    }, 'json');
+  });
+});
+})(jQuery);
+    </script>
   </div>
 </html>
