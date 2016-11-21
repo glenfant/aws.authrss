@@ -36,6 +36,7 @@
              readonly="readonly"
              tal:attributes="value view/tokenValue"
              />
+      <span tal:replace="structure context/@@authenticator/authenticator"/>
       <button class="context"
               id="aws-authrss-token-reset"
               name="aws-authrss-token-reset"
@@ -50,15 +51,24 @@ $(document).ready(function() {
   var baseUrl = $('base').attr('href') || $('body').attr('data-portal-url');
   $('#aws-authrss-token-reset').click(function(e) {
     e.preventDefault();
-    $.post(baseUrl + '/reset_rss_auth_token', {}, function(data) {
-      $('#aws-authrss-token-value').val(data.token);
-      $('#global_statusmessage').html(
-        '<div class="portalMessage info" role="alertdialog" aria-labelledby="dialogTitle">' +
-        '  <strong id="dialogTitle">Info</strong>' +
-        '  <span>' + data.message + '</span>' +
-        '</div>'
-      );
-    }, 'json');
+    var token = $('input[name="_authenticator"]').first().val();
+    $.ajax({
+      url: baseUrl + '/reset_rss_auth_token',
+      data: {},
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': token
+      },
+      success: function(data) {
+        $('#aws-authrss-token-value').val(data.token);
+        $('#global_statusmessage').html(
+          '<div class="portalMessage info" role="alertdialog" aria-labelledby="dialogTitle">' +
+          '  <strong id="dialogTitle">Info</strong>' +
+          '  <span>' + data.message + '</span>' +
+          '</div>'
+        );
+      },
+    dataType: 'json'});
   });
 });
 })(jQuery);
