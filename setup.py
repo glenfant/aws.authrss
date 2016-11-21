@@ -53,7 +53,7 @@ setup(name='aws.authrss',
           'plone.app.uuid',
           # -*- Extra requirements: -*-
       ],
-      extras_require={'test': ['plone.app.testing', 'lxml']},
+      extras_require={'test': ['plone.app.testing', 'lxml', 'plone.app.contenttypes']},
       entry_points="""
       # -*- Entry points: -*-
       [z3c.autoinclude.plugin]

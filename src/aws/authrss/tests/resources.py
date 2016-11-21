@@ -5,8 +5,6 @@ import base64
 from cStringIO import StringIO
 from lxml import etree
 
-from zope.configuration import xmlconfig
-
 from plone.testing.z2 import Browser
 
 from plone.app.testing import (
@@ -15,19 +13,19 @@ from plone.app.testing import (
     SITE_OWNER_NAME, SITE_OWNER_PASSWORD,
     TEST_USER_NAME, TEST_USER_ID, TEST_USER_PASSWORD
     )
-
+from Products.CMFCore.utils import getToolByName
+from plone.testing import z2
 
 class AwsAuthrss(PloneSandboxLayer):
 
     defaultBases = (PLONE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
+        import plone.app.contenttypes
+        self.loadZCML(package=plone.app.contenttypes)
         # Load ZCML for this package
         import aws.authrss
-        xmlconfig.file('configure.zcml',
-                       aws.authrss,
-                       context=configurationContext)
-        return
+        self.loadZCML(package=aws.authrss)
 
     def setUpPloneSite(self, portal):
         # Why the f...k do we need to run the standard workflow GS step?
@@ -35,13 +33,15 @@ class AwsAuthrss(PloneSandboxLayer):
         setuptool.runImportStepFromProfile('profile-Products.CMFPlone:plone', 'workflow',
                                            run_dependencies=False)
 
+        applyProfile(portal, 'plone.app.contenttypes:default')
         # Applying our default GS setup
         applyProfile(portal, 'aws.authrss:default')
-
+        z2.login(portal.getParentNode().acl_users, SITE_OWNER_NAME)
         # Enabling global site syndication
-        syntool = portal['portal_syndication']
+        syntool = getToolByName(portal, 'portal_syndication')
         syntool.editProperties(isAllowed=True)
-        return
+        z2.logout()
+        login(portal, TEST_USER_NAME)
 
 AWS_AUTHRSS_FIXTURE = AwsAuthrss()
 
@@ -98,7 +98,7 @@ class AuthRssFunctionalTesting(FunctionalTesting):
         login(portal, TEST_USER_NAME)
         tu_roles = getSecurityManager().getUser().getRolesInContext(portal)
         setRoles(portal, TEST_USER_ID, tu_roles+['Manager'])
-        syntool = portal['portal_syndication']
+        syntool = getToolByName(portal, 'portal_syndication')
         syntool.enableSyndication(item)
         setRoles(portal, TEST_USER_ID, tu_roles)
         logout()

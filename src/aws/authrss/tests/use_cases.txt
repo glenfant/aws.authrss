@@ -19,7 +19,10 @@ Our work environment::
 
 Checking global syndication settings
 
-  >>> portal.portal_syndication.isSiteSyndicationAllowed()
+
+  >>> from Products.CMFCore.utils import getToolByName
+  >>> syntool = getToolByName(portal, 'portal_syndication')
+  >>> syntool.isSiteSyndicationAllowed()
   True
 
 Checking our component is instaled::
@@ -33,7 +36,7 @@ Checking the required actions are available::
   >>> actions_tool = portal['portal_actions']
   >>> 'rss_token' in actions_tool['user'].keys()
   True
-  >>> 'private_rss' in actions_tool['document_actions'].keys()
+  >>> 'rss' in actions_tool['document_actions'].keys()
   True
 
 We grant reviewer role to the member such he will see pending content::
@@ -50,24 +53,33 @@ We need an anonymous user, a reviewer and a manager::
 
 The manager builds the 'foo' folder ::
 
-  >>> mgr_browser.open(portal_url + '/createObject?type_name=Folder')
-  >>> mgr_browser.getControl(name='title').value = 'Foo'
-  >>> mgr_browser.getControl(name='form.button.save').click()
-  >>> foo_folder_url = mgr_browser.url
+  >>> mgr_browser.open(portal_url + '/++add++Folder')
+  >>> mgr_browser.getControl(label='Confirm').click()
+  >>> mgr_browser.getControl(name='form.widgets.IDublinCore.title').value = 'Foo'
+  >>> mgr_browser.getControl(name='form.buttons.save').click()
+  >>> foo_folder_url = portal_url + '/foo/'
   >>> mgr_browser.open(foo_folder_url +
   ...                  '/content_status_modify?workflow_action=publish')
+  >>> mgr_browser.getControl(label='Confirm').click()
   >>> foo_folder_url
   'http://nohost/plone/foo/'
 
 And enables syndication on that folder::
 
   >>> mgr_browser.open(foo_folder_url + 'synPropertiesForm')
-  >>> submit = mgr_browser.getControl(name='form.button.enableSyndication')
+  >>> mgr_browser.getControl(name='form.widgets.enabled:list').value = ['checked']
+  >>> submit = mgr_browser.getControl(name='form.buttons.save')
   >>> submit.click()
   >>> foo_folder = portal['foo']
   >>> layer.enable_syndication(foo_folder)
-  >>> portal.portal_syndication.isSyndicationAllowed(foo_folder)
+  >>> syntool.isSyndicationAllowed(foo_folder)
   True
+  >>> transaction.commit()
+
+Because we don't have javascript enabled, we lost feed_types, configure it again::
+
+  >>> from Products.CMFPlone.interfaces.syndication import IFeedSettings
+  >>> IFeedSettings(foo_folder).feed_types = ('RSS',)
   >>> transaction.commit()
 
 The anonymous can see this content::
@@ -86,7 +98,7 @@ The anonymous should have the usual legacy RSS URL::
 
   >>> anon_browser.open(foo_folder_url)
   >>> tree = etree.HTML(anon_browser.contents)
-  >>> links = tree.xpath("//li[@id='document-action-private_rss']/a")
+  >>> links = tree.xpath("//li[@id='document-action-rss']/a")
   >>> len(links)
   1
   >>> anon_rss_url = links[0].attrib['href']
@@ -99,8 +111,9 @@ For the authenticated user
 An authenticated user could see the RSS link with his own private token::
 
   >>> member_browser.open(foo_folder_url)
+  >>> member_browser.getControl(label='Confirm').click()
   >>> tree = etree.HTML(member_browser.contents)
-  >>> links = tree.xpath("//li[@id='document-action-private_rss']/a")
+  >>> links = tree.xpath("//li[@id='document-action-rss']/a")
   >>> len(links)
   1
   >>> member_rss_url = links[0].attrib['href']
@@ -116,14 +129,15 @@ either the anonymous one or the private RSS feed for the member.
 Adding a public 'Title 1' document
 ----------------------------------
 
-  >>> mgr_browser.open(foo_folder_url + '/createObject?type_name=Document')
-  >>> mgr_browser.getControl(name='title').value = 'Title 1'
-  >>> mgr_browser.getControl(name='description').value = 'Description 1'
-  >>> mgr_browser.getControl(name='form.button.save').click()
-  >>> _ = mgr_browser.url
-  >>> mgr_browser.open(_ + '/content_status_modify?workflow_action=publish')
+  >>> mgr_browser.open(foo_folder_url + '/++add++Document')
+  >>> mgr_browser.getControl(name='form.widgets.IDublinCore.title').value = 'Title 1'
+  >>> mgr_browser.getControl(name='form.widgets.IDublinCore.description').value = 'Description 1'
+  >>> mgr_browser.getControl(name='form.buttons.save').click()
+  >>> url = portal_url + '/foo/title-1'
+  >>> mgr_browser.open(url + '/content_status_modify?workflow_action=publish')
+  >>> mgr_browser.getControl(label='Confirm').click()
   >>> transaction.commit()
-  >>> title1_doc_url = _
+  >>> title1_doc_url = url
   >>> 'title-1' in portal['foo'].objectIds()
   True
   >>> title1_doc = portal['foo']['title-1']
@@ -135,14 +149,15 @@ Adding a restricted 'Title 2' document
 
 Same as above but users must be reviewers to see this one::
 
-  >>> mgr_browser.open(foo_folder_url + '/createObject?type_name=Document')
-  >>> mgr_browser.getControl(name='title').value = 'Title 2'
-  >>> mgr_browser.getControl(name='description').value = 'Description 2'
-  >>> mgr_browser.getControl(name='form.button.save').click()
-  >>> _ = mgr_browser.url
-  >>> mgr_browser.open(_ + '/content_status_modify?workflow_action=submit')
+  >>> mgr_browser.open(foo_folder_url + '/++add++Document')
+  >>> mgr_browser.getControl(name='form.widgets.IDublinCore.title').value = 'Title 2'
+  >>> mgr_browser.getControl(name='form.widgets.IDublinCore.description').value = 'Description 2'
+  >>> mgr_browser.getControl(name='form.buttons.save').click()
+  >>> url = portal_url + '/foo/title-2'
+  >>> mgr_browser.open(url + '/content_status_modify?workflow_action=submit')
+  >>> mgr_browser.getControl(label='Confirm').click()
   >>> transaction.commit()
-  >>> title2_doc_url = _
+  >>> title2_doc_url = url
   >>> 'title-2' in portal['foo'].objectIds()
   True
   >>> title2_doc = portal['foo']['title-2']
@@ -206,12 +221,13 @@ Creating the topic
 
 We create a topic named 'foo-topic' and publish it.
 
-  >>> mgr_browser.open(portal_url + '/createObject?type_name=Topic')
-  >>> mgr_browser.getControl(name='title').value = 'Foo Topic'
-  >>> mgr_browser.getControl(name='form.button.save').click()
-  >>> foo_topic_url = mgr_browser.url
+  >>> mgr_browser.open(portal_url + '/++add++Collection')
+  >>> mgr_browser.getControl(name='form.widgets.IDublinCore.title').value = 'Foo Topic'
+  >>> mgr_browser.getControl(name='form.buttons.save').click()
+  >>> foo_topic_url = portal_url + '/foo-topic/'
   >>> mgr_browser.open(foo_topic_url +
   ...                  '/content_status_modify?workflow_action=publish')
+  >>> mgr_browser.getControl(label='Confirm').click()
   >>> foo_topic_url
   'http://nohost/plone/foo-topic/'
 
@@ -219,10 +235,28 @@ We set this topic's criteria such both above created documents appear in it.
 Note that I do this with the API and not with the browser (too noisy)::
 
   >>> topic = portal['foo-topic']
-  >>> _ = topic.addCriterion('portal_type', 'ATPortalTypeCriterion')
-  >>> _.setValue(['Document'])
-  >>> _ = topic.addCriterion('path', 'ATPathCriterion')
-  >>> _.setValue([foo_folder.UID()])
+  >>> portal['foo-topic'].setQuery([{
+  ...      'i': 'portal_type',
+  ...      'o': 'plone.app.querystring.operation.string.is',
+  ...      'v': 'Document',
+  ... }])
+  >>> transaction.commit()
+
+And enables syndication on that collection::
+
+  >>> mgr_browser.open(foo_topic_url + 'synPropertiesForm')
+  >>> mgr_browser.getControl(name='form.widgets.enabled:list').value = ['checked']
+  >>> submit = mgr_browser.getControl(name='form.buttons.save')
+  >>> submit.click()
+  >>> layer.enable_syndication(topic)
+  >>> syntool.isSyndicationAllowed(topic)
+  True
+  >>> transaction.commit()
+
+Because we don't have javascript enabled, we lost feed_types, configure it again::
+
+  >>> from Products.CMFPlone.interfaces.syndication import IFeedSettings
+  >>> IFeedSettings(topic).feed_types = ('RSS',)
   >>> transaction.commit()
 
 Viewing the Topic
@@ -251,7 +285,7 @@ Checking the topic syndication link
 For the anonymous user::
 
   >>> tree = etree.HTML(anon_browser.contents)
-  >>> links = tree.xpath("//li[@id='document-action-private_rss']/a")
+  >>> links = tree.xpath("//li[@id='document-action-rss']/a")
   >>> len(links)
   1
   >>> anon_rss_url = links[0].attrib['href']
@@ -261,7 +295,7 @@ For the anonymous user::
 For the member::
 
   >>> tree = etree.HTML(member_browser.contents)
-  >>> links = tree.xpath("//li[@id='document-action-private_rss']/a")
+  >>> links = tree.xpath("//li[@id='document-action-rss']/a")
   >>> len(links)
   1
   >>> member_rss_url = links[0].attrib['href']

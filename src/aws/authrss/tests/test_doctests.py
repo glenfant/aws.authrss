@@ -14,7 +14,7 @@ def test_suite():
     suite.addTests([
         layered(doctest.DocFileSuite(
                     *test_files,
-                    optionflags=doctest.ELLIPSIS),
+                    optionflags=doctest.ELLIPSIS | doctest.REPORT_ONLY_FIRST_FAILURE),
                 layer = AWS_AUTHRSS_FUNCTIONAL_TESTING),
     ])
     return suite
