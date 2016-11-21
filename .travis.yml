@@ -13,7 +13,7 @@ install:
   - bin/buildout -N buildout:download-cache=downloads annotate
   - bin/buildout -N buildout:download-cache=downloads
 script:
-  - bin/code-analysis
+#  - bin/code-analysis
   - bin/test
 after_success:
   - bin/createcoverage
