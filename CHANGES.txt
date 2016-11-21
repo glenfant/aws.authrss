@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.0.0 (unreleased)
+2.0.0 (2016-11-21)
 ------------------
 
 - Drop support for Plone < 4.3 and Python 2.6. Add compatibility for

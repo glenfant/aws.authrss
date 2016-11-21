@@ -9,7 +9,7 @@ def read(*names):
     path = os.path.join(here, *names)
     return open(path, 'r').read().strip()
 
-version = "2.0.0.dev0"
+version = '2.0.0'
 
 long_description = (
     read('README.rst')
