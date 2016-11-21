@@ -4,3 +4,7 @@ global-exclude *.pyo
 include README.rst
 include CONTRIBUTORS.txt
 include CHANGES.txt
+include *.py
+include buildout.cfg
+recursive-include docs *.GPL
+recursive-include docs *.txt
