@@ -4,8 +4,8 @@ Changelog
 2.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Update github link to point to collective.
+  [vincentfretin]
 
 2.0.0 (2016-11-26)
 ------------------
