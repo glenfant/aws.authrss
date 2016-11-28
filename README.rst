@@ -118,7 +118,7 @@ Links
 =====
 
 At github.com (contributors)
-  https://github.com/glenfant/aws.authrss
+  https://github.com/collective/aws.authrss
 
 At pypi (integrators)
   http://pypi.python.org/pypi/aws.authrss
