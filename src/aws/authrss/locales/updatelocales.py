@@ -4,11 +4,11 @@ i18n files maintenance utility. Please read the README.txt beside this
 file.  Portions of this code have been stolen from
 PlacelessTranslationService to prevent PYTHONPATH issues
 """
-import os
-import sys
-import struct
 import array
-from cStringIO import StringIO
+import os
+import struct
+import sys
+from io import StringIO
 from stat import ST_MTIME
 
 from i18ndude.script import rebuild_pot as i18n_rebuild_pot
@@ -49,7 +49,7 @@ def main():
 
     # Rebuilding the <domain>.pot
     if DEBUG:
-        print "Rebuilding", GENERATED_POT
+        print(("Rebuilding", GENERATED_POT))
     argv = [
         'i18ndude', 'rebuild-pot',
         '--pot', GENERATED_POT,
@@ -62,7 +62,7 @@ def main():
 
     # Synching the .po files
     if DEBUG:
-        print "Synching", PO_FILENAME, "files"
+        print(("Synching", PO_FILENAME, "files"))
     argv = [
         'i18ndude', 'sync',
         '--pot', GENERATED_POT,
@@ -73,15 +73,15 @@ def main():
 
     # Compiling .po files
     if DEBUG:
-        print "Compiling to", PO_FILENAME[:-2] + 'mo', "files"
+        print(("Compiling to", PO_FILENAME[:-2] + 'mo', "files"))
     for po_filename in find_po_files():
         mo_filename = po_filename[:-2] + 'mo'
         if (not os.path.exists(mo_filename)
             or
             (os.stat(po_filename)[ST_MTIME] > os.stat(mo_filename)[ST_MTIME])):
             if DEBUG:
-                print mo_filename
-            po_hdl = file(mo_filename, 'wb')
+                print(mo_filename)
+            po_hdl = open(mo_filename, 'wb')
             po_hdl.write(Msgfmt(po_filename).get())
             po_hdl.close()
     return
@@ -143,7 +143,7 @@ class Msgfmt(object):
         if isinstance(self.po, str):
             output = open(self.po, 'rb').readlines()
         if not output:
-            raise ValueError, "self.po is invalid! %s" % type(self.po)
+            raise ValueError("self.po is invalid! %s" % type(self.po))
         return output
 
     def add(self, id, str, fuzzy):
@@ -153,7 +153,7 @@ class Msgfmt(object):
 
     def generate(self):
         "Return the generated output."
-        keys = self.messages.keys()
+        keys = list(self.messages.keys())
         # the keys are sorted in the .mo file
         keys.sort()
         offsets = []
@@ -180,7 +180,7 @@ class Msgfmt(object):
             voffsets += [l2, o2+valuestart]
         offsets = koffsets + voffsets
         output = struct.pack("Iiiiiii",
-                             0x950412deL,       # Magic
+                             0x950412de,       # Magic
                              0,                 # Version
                              len(keys),         # # of entries
                              7*4,               # start of key index
@@ -237,7 +237,7 @@ class Msgfmt(object):
             # XXX: eval is evil because it could be abused
             try:
                 l = eval(l, globals())
-            except Exception, msg:
+            except Exception as msg:
                 raise PoSyntaxError('%s (line %d of po file %s): \n%s' % (msg, lno, self.name, l))
             if section == ID:
                 msgid += l
