@@ -16,3 +16,4 @@ eggs/*
 ext-cache/*
 omelette/*
 parts/*
+venv/
