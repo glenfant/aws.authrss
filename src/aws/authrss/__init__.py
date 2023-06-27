@@ -1,16 +1,9 @@
-# -*- extra stuff goes here -*-
-"""aws.authrss package"""
 from zope.i18nmessageid import MessageFactory
+
 import logging
 
-import config
 
-aws_authrss_messagefactory = MessageFactory(config.PACKAGENAME)
+PROJECT_NAME = "aws.authrss"
 
-LOG = logging.getLogger(config.PACKAGENAME)
-
-__version__ = None
-
-def initialize(context):
-    """Initializer called when used as a Zope 2 product.
-    """
+aws_authrss_messagefactory = MessageFactory(PROJECT_NAME)
+logger = logging.getLogger(PROJECT_NAME)

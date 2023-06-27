@@ -1,0 +1,6 @@
+[report]
+include =
+    src/aws/*
+omit =
+    */test*
+    */upgrades/*

@@ -1,2 +1,0 @@
-* `Gilles Lenfant <gilles.lenfant_AT_alterway.fr>`_: Main developer and french
-* `Vincent Fretin <vincent.fretin_AT_gmail.com>`_: Update to Plone 4.3 and 5.0

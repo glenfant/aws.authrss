@@ -1,10 +1,19 @@
-recursive-include src *
+graft src/aws
 global-exclude *.pyc
 global-exclude *.pyo
-include README.rst
-include CONTRIBUTORS.txt
-include CHANGES.txt
-include *.py
-include buildout.cfg
-recursive-include docs *.GPL
-recursive-include docs *.txt
+
+recursive-include jinja *
+recursive-include docs *
+
+include pyproject.toml
+include .coveragerc
+include mx.ini
+include CHANGES.md
+include CONTRIBUTORS.md
+include README.md
+include requirements.md
+
+recursive-exclude news *
+
+exclude tox.ini
+exclude *.txt

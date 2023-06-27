@@ -1,0 +1,35 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="aws.authrss"
+    >
+
+  <genericsetup:registerProfile
+      name="default"
+      title="Authenticated RSS feeds (aws.authrss)"
+      description="Installs the aws.authrss package"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/default"
+      post_handler=".setuphandlers.post_install"
+      />
+
+
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="aws.authrss (uninstall)"
+      description="Uninstalls the aws.authrss package"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/uninstall"
+      post_handler=".setuphandlers.uninstall"
+      />
+
+  <utility
+      factory=".setuphandlers.HiddenProfiles"
+      name="aws.authrss-hiddenprofiles"
+      />
+
+  <!-- -*- extra stuff goes here -*- -->
+
+</configure>

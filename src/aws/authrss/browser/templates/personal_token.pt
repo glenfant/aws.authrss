@@ -1,12 +1,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="aws.authrss">
+      i18n:domain="aws.authrss"
+>
 
-  <div metal:fill-slot="body" id="content">
-    <h1 class="documentFirstHeading" i18n:translate="">My RSS token</h1>
+  <div id="content"
+       metal:fill-slot="body"
+  >
+    <h1 class="documentFirstHeading"
+        i18n:translate=""
+    >My RSS token</h1>
 
     <p i18n:translate="explain_rss_token_1">
       Your private RSS token grants your privileges to your favorite RSS reader
@@ -14,7 +19,9 @@
       when authenticated on this site.
     </p>
     <p i18n:translate="explain_rss_token_2">
-      This RSS token does <strong>not</strong> reveal your login or password for
+      This RSS token does
+      <strong>not</strong>
+       reveal your login or password for
       this site, nor grant another user who knows your token to anything else
       than reading a private RSS feed.
     </p>
@@ -28,20 +35,22 @@
     </p>
     <fieldset>
       <legend i18n:translate="">Your token</legend>
-      <input type="text"
-             id="aws-authrss-token-value"
+      <input id="aws-authrss-token-value"
              name="aws-authrss-token-value"
-             value="#"
-             style="width: 30em"
              readonly="readonly"
-             tal:attributes="value view/tokenValue"
-             />
-      <span tal:replace="structure context/@@authenticator/authenticator"/>
+             style="width: 30em"
+             type="text"
+             value="#"
+             tal:attributes="
+               value view/tokenValue;
+             "
+      />
+      <span tal:replace="structure context/@@authenticator/authenticator"></span>
       <button class="context"
               id="aws-authrss-token-reset"
               name="aws-authrss-token-reset"
               i18n:translate=""
-              >
+      >
         Reset
       </button>
     </fieldset>

@@ -1,58 +1,68 @@
 <configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="aws.authrss"
+    >
+
+  <include
+      package="aws.authrss"
+      file="permissions.zcml"
+      />
 
   <browser:view
-     name="auth-rss-link"
-     for="*"
-     class=".views.RSSLinkView"
-     layer="aws.authrss.interfaces.IAuthRSSLayer"
-     permission="zope2.View"
-     />
+      name="auth-rss-link"
+      for="*"
+      class=".views.RSSLinkView"
+      permission="zope2.View"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
+      />
 
   <browser:view
-     name="AUTH-RSS"
-     for="*"
-     class=".views.AuthRSSView"
-     layer="aws.authrss.interfaces.IAuthRSSLayer"
-     permission="zope.Public"
-     />
+      name="AUTH-RSS"
+      for="*"
+      class=".views.AuthRSSView"
+      permission="zope.Public"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
+      />
 
   <browser:page
       name="personal-rss-token"
       for="plone.app.layout.navigation.interfaces.INavigationRoot"
       class=".views.PersonalTokenView"
       template="templates/personal_token.pt"
-      layer="aws.authrss.interfaces.IAuthRSSLayer"
       permission="cmf.SetOwnProperties"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
       />
 
   <browser:page
       name="rss-token-controlpanel"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       class=".views.ControlPanelView"
       template="templates/controlpanel.pt"
-      layer="aws.authrss.interfaces.IAuthRSSLayer"
       permission="aws.authrss.PurgeTokens"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
       />
 
   <!-- Ajax actions -->
   <browser:page
       name="reset_rss_auth_token"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       class=".views.AjaxTokensUtils"
       attribute="resetToken"
-      layer="aws.authrss.interfaces.IAuthRSSLayer"
       permission="cmf.SetOwnProperties"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
       />
 
   <browser:page
       name="purge_rss_auth_tokens"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       class=".views.AjaxTokensUtils"
       attribute="purgeTokens"
-      layer="aws.authrss.interfaces.IAuthRSSLayer"
       permission="aws.authrss.PurgeTokens"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
       />
 
   <!-- Search page resources -->
@@ -65,22 +75,23 @@
       />
 
   <browser:view
-     name="AUTH-SEARCH-RSS"
-     for="*"
-     class=".views.AuthSearchRSSView"
-     layer="aws.authrss.interfaces.IAuthRSSLayer"
-     permission="zope.Public"
-     />
+      name="AUTH-SEARCH-RSS"
+      for="*"
+      class=".views.AuthSearchRSSView"
+      permission="zope.Public"
+      layer="aws.authrss.interfaces.IAuthRSSLayer"
+      />
 
   <!-- We override the plone.app.layout.links.viewlets.RSSViewlet -->
 
-  <include package="plone.app.layout"/>
-  <browser:viewlet
-      name="plone.links.RSS"
-      manager="plone.app.layout.viewlets.interfaces.IHtmlHeadLinks"
-      class=".viewlets.AuthRSSLinkViewlet"
-      permission="zope2.View"
-      layer="aws.authrss.interfaces.IAuthRSSLayer"
-      />
+  <configure package="plone.app.layout">
+    <browser:viewlet
+        name="plone.links.RSS"
+        manager="plone.app.layout.viewlets.interfaces.IHtmlHeadLinks"
+        class="aws.authrss.browser.viewlets.AuthRSSLinkViewlet"
+        permission="zope2.View"
+        layer="aws.authrss.interfaces.IAuthRSSLayer"
+        />
+  </configure>
 
 </configure>

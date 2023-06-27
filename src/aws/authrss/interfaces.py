@@ -1,22 +1,20 @@
-# -*- coding: utf-8 -*-
 """Public interfaces of aws.authrss"""
 
 from zope.interface import Interface
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 
-class IAuthRSSLayer(Interface):
+class IAuthRSSLayer(IDefaultBrowserLayer):
     """Layer marker interface available when browsing Plone site where we are
     installed, using the profiles/default/browserlayer.xml
     """
 
 
 class ITokenManager(Interface):
-    """Tokens management utility
-    """
+    """Tokens management utility"""
 
     def userIdForToken(token):
-        """The user id for a given token or None (anonymous).
-        """
+        """The user id for a given token or None (anonymous)."""
 
     def tokenForUserId(user_id):
         """The token for a member id. The token is generated and stored
@@ -29,9 +27,7 @@ class ITokenManager(Interface):
         """
 
     def pruneUserId(user_id):
-        """Remove the token for an user about to be removed
-        """
+        """Remove the token for an user about to be removed"""
 
     def knownUserIds():
-        """An iterable over (or sequence of) registered user ids
-        """
+        """An iterable over (or sequence of) registered user ids"""

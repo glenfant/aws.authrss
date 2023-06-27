@@ -4,6 +4,7 @@
   <utilities>
     <utility factory="aws.authrss.tokenmanager.DefaultTokenManager"
              interface="aws.authrss.interfaces.ITokenManager"
+             remove="True"
     />
   </utilities>
 </componentregistry>

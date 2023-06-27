@@ -5,14 +5,20 @@
 >
   <configlet action_id="auth-rss"
              appId="aws.authrss"
-             category="Products"
+             remove="True"
+  />
+
+  <configlet action_id="syndication"
+             appId="Plone"
+             category="plone-general"
              condition_expr=""
-             icon_expr="string:$portal_url/rss.png"
-             title="Authenticated RSS"
-             url_expr="string:${portal_url}/@@rss-token-controlpanel"
+             icon_expr="string:wifi"
+             title="Syndication"
+             url_expr="string:${portal_url}/@@syndication-controlpanel"
              visible="True"
              i18n:attributes="title"
   >
-    <permission>Plone Site Setup: RSS authentication tokens</permission>
+    <permission>Plone Site Setup: Site</permission>
   </configlet>
+
 </object>

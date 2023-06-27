@@ -3,6 +3,14 @@
         name="portal_actions"
 >
   <object name="document_actions">
+    <!-- Remove RSS Action which is registered by this Package -->
+    <object meta_type="CMF Action"
+            name="rss"
+            remove="True"
+            i18n:domain="plone"
+    />
+
+    <!-- Add the Plone Default RSS Action -->
     <object meta_type="CMF Action"
             name="rss"
             i18n:domain="plone"
@@ -13,9 +21,8 @@
       <property name="description"
                 i18n:translate=""
       />
-      <property name="url_expr">object/@@auth-rss-link</property>
-      <property name="link_target" />
-      <property name="icon_expr">string:rss</property>
+      <property name="url_expr">object/@@syndication-util/rss_url</property>
+      <property name="icon_expr">string:plone-rss</property>
       <property name="available_expr">object/@@syndication-util/context_enabled</property>
       <property name="permissions">
         <element value="View" />
@@ -23,26 +30,15 @@
       <property name="visible">True</property>
     </object>
   </object>
+
   <object name="user">
+    <!-- User Action RSS Token -->
     <object insert-before="logout"
             meta_type="CMF Action"
             name="rss_token"
+            remove="True"
             i18n:domain="aws.authrss"
-    >
-      <property name="title"
-                i18n:translate=""
-      >RSS Token</property>
-      <property name="description"
-                i18n:translate=""
-      >View or reset your RSS token</property>
-      <property name="url_expr">string:${globals_view/navigationRootUrl}/@@personal-rss-token</property>
-      <property name="link_target" />
-      <property name="icon_expr">string:rss</property>
-      <property name="available_expr">python:member is not None</property>
-      <property name="permissions">
-        <element value="View" />
-      </property>
-      <property name="visible">True</property>
-    </object>
+    />
   </object>
+
 </object>

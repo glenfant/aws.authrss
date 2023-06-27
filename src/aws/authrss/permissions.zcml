@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="aws.authrss"
+    >
+
+  <configure zcml:condition="installed AccessControl.security">
+
+
+    <!-- Purge granted to managers only by default (no need to make a roles map GS
+       export) -->
+
+    <permission
+        id="aws.authrss.PurgeTokens"
+        title="Plone Site Setup: RSS authentication tokens"
+        />
+  </configure>
+
+</configure>

@@ -2,5 +2,6 @@
 <layers>
   <layer interface="aws.authrss.interfaces.IAuthRSSLayer"
          name="aws.authrss"
+         remove="true"
   />
 </layers>

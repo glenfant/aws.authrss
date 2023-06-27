@@ -1,44 +1,40 @@
-# -*- coding: utf-8 -*-
 """The default tokens manager"""
 
-from zope.interface import implements
-from zope.component import getUtility
+from aws.authrss.interfaces import ITokenManager
 from persistent import Persistent
-from BTrees.OOBTree import OOBTree
+from persistent.dict import PersistentDict
 from plone.uuid.interfaces import IUUIDGenerator
+from zope.component import getUtility
+from zope.interface import implementer
 
-from interfaces import ITokenManager
 
-
+@implementer(ITokenManager)
 class DefaultTokenManager(Persistent):
-    """Tokens manager persistent utility (per site)
-    """
-    implements(ITokenManager)
+    """Tokens manager persistent utility (per site)"""
 
     def __init__(self):
+        self.clear()
+
+    def clear(self):
         # {token: user id, ...}
-        self._token2uid = OOBTree()
+        self._token2uid = PersistentDict()
         # {user id: token, ...}
-        self._uid2token = OOBTree()
-        return
+        self._uid2token = PersistentDict()
 
     def userIdForToken(self, token):
-        """See ITokensManager
-        """
+        """See ITokensManager"""
         return self._token2uid.get(token, None)
 
     def tokenForUserId(self, user_id):
-        """See ITokensManager
-        """
-        if user_id in self._uid2token:
+        """See ITokensManager"""
+        if user_id in self._uid2token.keys():
             return self._uid2token[user_id]
 
         # We'll make a token for this new user id
         return self.resetToken(user_id)
 
     def resetToken(self, user_id):
-        """See ITokensManager
-        """
+        """See ITokensManager"""
         old_token = self._uid2token.get(user_id, None)
         if old_token is not None:
             del self._token2uid[old_token]
@@ -50,14 +46,11 @@ class DefaultTokenManager(Persistent):
         return token
 
     def pruneUserId(self, user_id):
-        """See ITokensManager
-        """
+        """See ITokensManager"""
         token = self._uid2token[user_id]
         del self._uid2token[user_id]
         del self._token2uid[token]
 
     def knownUserIds(self):
-        """See ITokensManager
-        """
-        for user_id in self._uid2token.keys():
-            yield user_id
+        """See ITokensManager"""
+        yield from self._uid2token.keys()

@@ -31,6 +31,7 @@ lib64
 parts/
 pyvenv.cfg
 var/
+*.mo
 
 # mxdev
 /instance/
@@ -40,7 +41,7 @@ var/
 /sources/
 /venv/
 .installed.txt
-
+instance.yaml
 
 ##
 # Add extra configuration options in .meta.toml:
